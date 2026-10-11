@@ -177,3 +177,67 @@ app.put('/api/candidatos/:id', upload.fields([
 app.listen(3000, () => {
     console.log('Servidor a correr na porta 3000 (http://localhost:3000)');
 });
+
+// Rota para redefinir a senha do candidato
+app.post('/api/recuperar-senha', (req, res) => {
+    const { email, novaSenha } = req.body;
+
+    if (!email || !novaSenha) {
+        return res.status(400).json({ erro: 'Por favor, informe o e-mail e a nova senha.' });
+    }
+
+    // Verifica se o e-mail existe na base de dados
+    const sqlVerificar = 'SELECT * FROM Candidato WHERE email = ?'; // Ou o nome correto da sua tabela (ex: candidatos)
+    db.query(sqlVerificar, [email], (err, resultados) => {
+        if (err) {
+            console.error('Erro ao procurar e-mail:', err);
+            return res.status(500).json({ erro: 'Erro interno no servidor.' });
+        }
+
+        if (resultados.length === 0) {
+            return res.status(404).json({ erro: 'E-mail não encontrado na base de dados.' });
+        }
+
+        // Atualiza a senha do candidato (Nota: em projetos profissionais reais, use bcrypt para encriptar a senha)
+        const sqlAtualizar = 'UPDATE Candidato SET senha = ? WHERE email = ?';
+        db.query(sqlAtualizar, [novaSenha, email], (errUpdate, resultadoUpdate) => {
+            if (errUpdate) {
+                console.error('Erro ao atualizar senha:', errUpdate);
+                return res.status(500).json({ erro: 'Erro ao redefinir a senha.' });
+            }
+
+            res.json({ mensagem: 'Senha redefinida com sucesso! Pode fazer login com a nova senha.' });
+        });
+    });
+});
+
+// Rota para redefinir a senha do candidato
+app.post('/api/recuperar-senha', (req, res) => {
+    const { email, novaSenha } = req.body;
+
+    if (!email || !novaSenha) {
+        return res.status(400).json({ erro: 'Por favor, informe o e-mail e a nova senha.' });
+    }
+
+    const sqlVerificar = 'SELECT * FROM Candidato WHERE email = ?';
+    db.query(sqlVerificar, [email], (err, resultados) => {
+        if (err) {
+            console.error('Erro ao procurar e-mail:', err);
+            return res.status(500).json({ erro: 'Erro interno no servidor.' });
+        }
+
+        if (resultados.length === 0) {
+            return res.status(404).json({ erro: 'E-mail não encontrado na base de dados.' });
+        }
+
+        const sqlAtualizar = 'UPDATE Candidato SET senha = ? WHERE email = ?';
+        db.query(sqlAtualizar, [novaSenha, email], (errUpdate, resultadoUpdate) => {
+            if (errUpdate) {
+                console.error('Erro ao atualizar senha:', errUpdate);
+                return res.status(500).json({ erro: 'Erro ao redefinir a senha.' });
+            }
+
+            res.json({ mensagem: 'Senha redefinida com sucesso! Pode fazer login com a nova senha.' });
+        });
+    });
+});
