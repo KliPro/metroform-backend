@@ -241,3 +241,23 @@ app.post('/api/recuperar-senha', (req, res) => {
         });
     });
 });
+
+// Rota para listar as candidaturas de um candidato específico
+app.get('/api/candidaturas/:idCandidato', (req, res) => {
+    const idCandidato = req.params.idCandidato;
+
+    const sql = `
+        SELECT vaga.titulo, vaga.setor, vaga.localizacao, candidatura.data_candidatura 
+        FROM candidatura 
+        JOIN vaga ON candidatura.id_vaga = vaga.id_vaga 
+        WHERE candidatura.id_candidato = ?
+    `;
+
+    db.query(sql, [idCandidato], (err, resultados) => {
+        if (err) {
+            console.error('Erro ao buscar candidaturas:', err);
+            return res.status(500).json({ erro: 'Erro ao carregar as suas candidaturas.' });
+        }
+        res.json(resultados);
+    });
+});
