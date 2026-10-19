@@ -203,6 +203,29 @@ app.post('/api/recuperar-senha', (req, res) => {
     });
 });
 
+// Rota para Envio de Currículo / Banco Geral de Talentos
+app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
+    const { nome, email, telefone, resumo } = req.body;
+    const curriculoPdf = req.file ? req.file.filename : null;
+
+    if (!nome || !email || !curriculoPdf) {
+        return res.status(400).json({ erro: 'Por favor, preencha os campos obrigatórios e envie o currículo em PDF.' });
+    }
+
+    const query = `
+        INSERT INTO banco_talentos (nome, email, telefone, resumo, curriculo_pdf, data_envio) 
+        VALUES (?, ?, ?, ?, ?, NOW())
+    `;
+
+    db.query(query, [nome, email, telefone, resumo, curriculoPdf], (err, resultado) => {
+        if (err) {
+            console.error('Erro ao guardar currículo no banco de talentos:', err);
+            return res.status(500).json({ erro: 'Erro ao enviar o currículo.' });
+        }
+        res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
+    });
+});
+
 // Login de Administrador do RH
 app.post('/api/login-rh', (req, res) => {
     const { email, senha } = req.body;
@@ -242,6 +265,35 @@ app.post('/api/admin-rh', (req, res) => {
             return res.status(500).json({ erro: 'Erro ao cadastrar gestor. Verifique se o e-mail já está em uso.' });
         }
         res.status(201).json({ mensagem: 'Gestor cadastrado com sucesso!' });
+    });
+});
+
+// Rota para Envio de Currículo / Banco Geral de Talentos com rastreio
+app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
+    console.log('--- REQUISIÇÃO RECEBIDA EM /api/banco-talentos ---');
+    console.log('Dados do corpo (req.body):', req.body);
+    console.log('Ficheiro recebido (req.file):', req.file);
+
+    const { nome, email, telefone, resumo } = req.body;
+    const curriculoPdf = req.file ? req.file.filename : null;
+
+    if (!nome || !email || !curriculoPdf) {
+        console.log('Erro: Campos obrigatórios em falta.');
+        return res.status(400).json({ erro: 'Por favor, preencha os campos obrigatórios e envie o currículo em PDF.' });
+    }
+
+    const query = `
+        INSERT INTO banco_talentos (nome, email, telefone, resumo, curriculo_pdf, data_envio) 
+        VALUES (?, ?, ?, ?, ?, NOW())
+    `;
+
+    db.query(query, [nome, email, telefone, resumo, curriculoPdf], (err, resultado) => {
+        if (err) {
+            console.error('ERRO CRÍTICO NO MYSQL:', err);
+            return res.status(500).json({ erro: 'Erro ao enviar o currículo.' });
+        }
+        console.log('Currículo guardado com sucesso no banco de talentos!');
+        res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
     });
 });
 
