@@ -172,45 +172,6 @@ app.put('/api/candidatos/:id', upload.fields([
     });
 });
 
-
-// 6. INICIALIZAÇÃO DO SERVIDOR WEB
-app.listen(3000, () => {
-    console.log('Servidor a correr na porta 3000 (http://localhost:3000)');
-});
-
-// Rota para redefinir a senha do candidato
-app.post('/api/recuperar-senha', (req, res) => {
-    const { email, novaSenha } = req.body;
-
-    if (!email || !novaSenha) {
-        return res.status(400).json({ erro: 'Por favor, informe o e-mail e a nova senha.' });
-    }
-
-    // Verifica se o e-mail existe na base de dados
-    const sqlVerificar = 'SELECT * FROM Candidato WHERE email = ?'; // Ou o nome correto da sua tabela (ex: candidatos)
-    db.query(sqlVerificar, [email], (err, resultados) => {
-        if (err) {
-            console.error('Erro ao procurar e-mail:', err);
-            return res.status(500).json({ erro: 'Erro interno no servidor.' });
-        }
-
-        if (resultados.length === 0) {
-            return res.status(404).json({ erro: 'E-mail não encontrado na base de dados.' });
-        }
-
-        // Atualiza a senha do candidato (Nota: em projetos profissionais reais, use bcrypt para encriptar a senha)
-        const sqlAtualizar = 'UPDATE Candidato SET senha = ? WHERE email = ?';
-        db.query(sqlAtualizar, [novaSenha, email], (errUpdate, resultadoUpdate) => {
-            if (errUpdate) {
-                console.error('Erro ao atualizar senha:', errUpdate);
-                return res.status(500).json({ erro: 'Erro ao redefinir a senha.' });
-            }
-
-            res.json({ mensagem: 'Senha redefinida com sucesso! Pode fazer login com a nova senha.' });
-        });
-    });
-});
-
 // Rota para redefinir a senha do candidato
 app.post('/api/recuperar-senha', (req, res) => {
     const { email, novaSenha } = req.body;
@@ -242,22 +203,50 @@ app.post('/api/recuperar-senha', (req, res) => {
     });
 });
 
-// Rota para listar as candidaturas de um candidato específico
-app.get('/api/candidaturas/:idCandidato', (req, res) => {
-    const idCandidato = req.params.idCandidato;
+// Login de Administrador do RH
+app.post('/api/login-rh', (req, res) => {
+    const { email, senha } = req.body;
+    const query = 'SELECT * FROM administrador_rh WHERE email = ? AND senha = ?';
 
-    const sql = `
-        SELECT vaga.titulo, vaga.setor, vaga.localizacao, candidatura.data_candidatura 
-        FROM candidatura 
-        JOIN vaga ON candidatura.id_vaga = vaga.id_vaga 
-        WHERE candidatura.id_candidato = ?
-    `;
-
-    db.query(sql, [idCandidato], (err, resultados) => {
+    db.query(query, [email, senha], (err, resultados) => {
         if (err) {
-            console.error('Erro ao buscar candidaturas:', err);
-            return res.status(500).json({ erro: 'Erro ao carregar as suas candidaturas.' });
+            console.error('Erro ao tentar fazer login do RH:', err);
+            return res.status(500).json({ erro: 'Erro interno no servidor ao processar o login.' });
         }
-        res.json(resultados);
+
+        if (resultados.length > 0) {
+            res.status(200).json({ 
+                mensagem: 'Login do RH efetuado com sucesso!', 
+                admin: {
+                    id: resultados[0].id_admin,
+                    nome: resultados[0].nome,
+                    email: resultados[0].email
+                }
+            });
+        } else {
+            res.status(401).json({ erro: 'E-mail ou senha incorretos.' });
+        }
     });
+});
+
+// Cadastro de Administrador do RH
+app.post('/api/admin-rh', (req, res) => {
+    console.log('Dados recebidos para cadastro:', req.body); // <-- Adicione esta linha
+
+    const { nome, email, senha } = req.body;
+    const query = 'INSERT INTO administrador_rh (nome, email, senha) VALUES (?, ?, ?)';
+
+    db.query(query, [nome, email, senha], (err, resultado) => {
+        if (err) {
+            console.error('Erro detalhado no MySQL:', err); // <-- E veja o que aparece aqui
+            return res.status(500).json({ erro: 'Erro ao cadastrar gestor. Verifique se o e-mail já está em uso.' });
+        }
+        res.status(201).json({ mensagem: 'Gestor cadastrado com sucesso!' });
+    });
+});
+
+
+// 6. INICIALIZAÇÃO DO SERVIDOR WEB (DEVE FICAR SEMPRE NO FINAL DE TUDO)
+app.listen(3000, () => {
+    console.log('Servidor a correr na porta 3000 (http://localhost:3000)');
 });
