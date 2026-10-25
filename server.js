@@ -143,13 +143,13 @@ app.put('/api/candidatos/:id', upload.fields([
     { name: 'curriculo', maxCount: 1 }
 ]), (req, res) => {
     const idCandidato = req.params.id;
-    const { nome, telefone, resumo } = req.body;
-    
-    const foto = req.files['foto'] ? req.files['foto'][0].filename : null;
-    const curriculo = req.files['curriculo'] ? req.files['curriculo'][0].filename : null;
+    const { nome, telefone, resumo, formacao, cidade } = req.body;
 
-    let query = `UPDATE Candidato SET nome = ?, telefone = ?, resumo = ?`;
-    let params = [nome, telefone, resumo];
+    const foto = req.files && req.files['foto'] ? req.files['foto'][0].filename : null;
+    const curriculo = req.files && req.files['curriculo'] ? req.files['curriculo'][0].filename : null;
+
+    let query = `UPDATE Candidato SET nome = ?, telefone = ?, resumo = ?, formacao = ?, cidade = ?`;
+    let params = [nome, telefone, resumo, formacao, cidade];
 
     if (foto) {
         query += `, foto_perfil = ?`;
@@ -165,7 +165,7 @@ app.put('/api/candidatos/:id', upload.fields([
 
     db.query(query, params, (err, resultado) => {
         if (err) {
-            console.error('Erro ao atualizar perfil:', err);
+            console.error('ERRO NO MYSQL:', err);
             return res.status(500).json({ erro: 'Erro ao atualizar os dados.' });
         }
         res.status(200).json({ mensagem: 'Perfil atualizado com sucesso!' });
