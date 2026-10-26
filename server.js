@@ -89,18 +89,35 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Buscar Vagas Disponíveis
-app.get('/api/vagas', (req, res) => {
-    const query = 'SELECT * FROM Vaga';
+// --- ROTAS DE VAGAS ---
 
+// Listar todas as Vagas (Para a Página Inicial, Página de Vagas e Painel do RH)
+app.get('/api/vagas', (req, res) => {
+    const query = 'SELECT * FROM vagas ORDER BY id_vaga DESC';
     db.query(query, (err, resultados) => {
         if (err) {
             console.error('Erro ao buscar vagas:', err);
-            return res.status(500).json({ erro: 'Erro ao carregar as vagas disponíveis.' });
+            return res.status(500).json({ erro: 'Erro ao carregar as vagas.' });
         }
         res.status(200).json(resultados);
     });
 });
+
+// Cadastrar uma nova Vaga (A partir do painel do RH)
+app.post('/api/vagas', (req, res) => {
+    const { titulo, setor, localizacao, requisitos } = req.body;
+    const sql = "INSERT INTO vagas (titulo, setor, localizacao, requisitos) VALUES (?, ?, ?, ?)";
+
+    db.query(sql, [titulo, setor, localizacao, requisitos], (err, resultado) => {
+        if (err) {
+            console.error("Erro detalhado do MySQL ao cadastrar vaga:", err);
+            return res.status(500).json({ erro: "Erro ao cadastrar a vaga no banco de dados." });
+        }
+        res.status(201).json({ mensagem: "Vaga cadastrada com sucesso!" });
+    });
+});
+
+// --- ROTAS DE CANDIDATURAS ---
 
 // Buscar Candidaturas de um Candidato Específico
 app.get('/api/candidaturas/:id_candidato', (req, res) => {
@@ -203,7 +220,21 @@ app.post('/api/recuperar-senha', (req, res) => {
     });
 });
 
-// Rota para Envio de Currículo / Banco Geral de Talentos
+// --- ROTAS DO BANCO GERAL DE TALENTOS ---
+
+// Listar todos os currículos do Banco de Talentos (Para o Painel do RH)
+app.get('/api/banco-talentos', (req, res) => {
+    const query = 'SELECT * FROM banco_talentos ORDER BY data_envio DESC';
+    db.query(query, (err, resultados) => {
+        if (err) {
+            console.error('Erro ao buscar banco de talentos:', err);
+            return res.status(500).json({ erro: 'Erro ao carregar o banco de talentos.' });
+        }
+        res.status(200).json(resultados);
+    });
+});
+
+// Envio de Currículo / Banco Geral de Talentos
 app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
     const { nome, email, telefone, resumo } = req.body;
     const curriculoPdf = req.file ? req.file.filename : null;
@@ -219,12 +250,14 @@ app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
 
     db.query(query, [nome, email, telefone, resumo, curriculoPdf], (err, resultado) => {
         if (err) {
-            console.error('Erro ao guardar currículo no banco de talentos:', err);
+            console.error('ERRO CRÍTICO NO MYSQL:', err);
             return res.status(500).json({ erro: 'Erro ao enviar o currículo.' });
         }
         res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
     });
 });
+
+// --- ROTAS DE GESTÃO DO RH ---
 
 // Login de Administrador do RH
 app.post('/api/login-rh', (req, res) => {
@@ -254,51 +287,20 @@ app.post('/api/login-rh', (req, res) => {
 
 // Cadastro de Administrador do RH
 app.post('/api/admin-rh', (req, res) => {
-    console.log('Dados recebidos para cadastro:', req.body); // <-- Adicione esta linha
-
     const { nome, email, senha } = req.body;
     const query = 'INSERT INTO administrador_rh (nome, email, senha) VALUES (?, ?, ?)';
 
     db.query(query, [nome, email, senha], (err, resultado) => {
         if (err) {
-            console.error('Erro detalhado no MySQL:', err); // <-- E veja o que aparece aqui
+            console.error('Erro detalhado no MySQL:', err);
             return res.status(500).json({ erro: 'Erro ao cadastrar gestor. Verifique se o e-mail já está em uso.' });
         }
         res.status(201).json({ mensagem: 'Gestor cadastrado com sucesso!' });
     });
 });
 
-// Rota para Envio de Currículo / Banco Geral de Talentos com rastreio
-app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
-    console.log('--- REQUISIÇÃO RECEBIDA EM /api/banco-talentos ---');
-    console.log('Dados do corpo (req.body):', req.body);
-    console.log('Ficheiro recebido (req.file):', req.file);
 
-    const { nome, email, telefone, resumo } = req.body;
-    const curriculoPdf = req.file ? req.file.filename : null;
-
-    if (!nome || !email || !curriculoPdf) {
-        console.log('Erro: Campos obrigatórios em falta.');
-        return res.status(400).json({ erro: 'Por favor, preencha os campos obrigatórios e envie o currículo em PDF.' });
-    }
-
-    const query = `
-        INSERT INTO banco_talentos (nome, email, telefone, resumo, curriculo_pdf, data_envio) 
-        VALUES (?, ?, ?, ?, ?, NOW())
-    `;
-
-    db.query(query, [nome, email, telefone, resumo, curriculoPdf], (err, resultado) => {
-        if (err) {
-            console.error('ERRO CRÍTICO NO MYSQL:', err);
-            return res.status(500).json({ erro: 'Erro ao enviar o currículo.' });
-        }
-        console.log('Currículo guardado com sucesso no banco de talentos!');
-        res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
-    });
-});
-
-
-// 6. INICIALIZAÇÃO DO SERVIDOR WEB (DEVE FICAR SEMPRE NO FINAL DE TUDO)
+// 6. INICIALIZAÇÃO DO SERVIDOR WEB
 app.listen(3000, () => {
     console.log('Servidor a correr na porta 3000 (http://localhost:3000)');
 });
