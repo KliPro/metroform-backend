@@ -49,7 +49,8 @@ const db = mysql.createConnection({
 db.connect((err) => {
     // Verifica se ocorreu algum erro crítico ao tentar ligar à base de dados
     if (err) {
-        console.error('❌ Erro ao conectar ao banco de dados MySQL:', err);
+        console.error('❌ Erro ao conectar ao banco de dados MySQL:', err.message);
+        console.error('Código do erro:', err.code);
         return; // Interrompe a execução caso a ligação falhe
     }
     // Confirma no terminal que a ligação foi bem-sucedida
