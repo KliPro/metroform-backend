@@ -33,12 +33,13 @@ const storage = multer.diskStorage({
 // Inicializa o middleware do multer com a configuração de armazenamento definida
 const upload = multer({ storage: storage });
 
-// Cria a conexão com a base de dados MySQL utilizando as credenciais locais do servidor
+// Cria a conexão com a base de dados MySQL (suportando variáveis de ambiente para a nuvem ou valores locais do XAMPP)
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'metroform_db'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'metroform_db',
+    port: process.env.DB_PORT || 3306
 });
 
 // Estabelece a conexão efetiva com a base de dados MySQL
