@@ -5,7 +5,7 @@
 async function carregarVagasDoBanco() {
     try {
         // Faz uma requisição HTTP GET assíncrona para a rota de vagas no servidor Node.js
-        const resposta = await fetch('http://localhost:3000/api/vagas');
+        const resposta = await fetch('/api/vagas');
         // Converte a resposta recebida para o formato JSON (lista de vagas)
         let vagas = await resposta.json();
 
@@ -105,7 +105,7 @@ async function candidatarVaga(idVaga) {
 
     try {
         // Envia uma requisição HTTP POST para registrar a candidatura no servidor
-        const resposta = await fetch('http://localhost:3000/api/candidaturas', {
+        const resposta = await fetch('/api/candidaturas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

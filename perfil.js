@@ -44,7 +44,7 @@ if (!candidato || (!candidato.id && !candidato.id_candidato)) {
         // Se o candidato tiver uma foto de perfil cadastrada na base de dados
         if (candidato.foto_perfil) {
             // Renderiza a imagem do avatar apontando para a pasta de uploads do servidor backend
-            avatarWrapper.innerHTML = `<img src="http://localhost:3000/uploads/${candidato.foto_perfil}" alt="Foto de Perfil" class="foto-perfil">`;
+            avatarWrapper.innerHTML = `<img src="/uploads/${candidato.foto_perfil}" alt="Foto de Perfil" class="foto-perfil">`;
         } else {
             // Caso não tenha foto, separa o nome em partes para gerar iniciais automáticas
             const nomePartes = (candidato.nome || 'Utilizador').trim().split(' ');
@@ -73,7 +73,7 @@ if (!candidato || (!candidato.id && !candidato.id_candidato)) {
                         </p>
                         <small style="color: #666; font-size: 12px;">${candidato.curriculo_pdf}</small>
                     </div>
-                    <a href="http://localhost:3000/uploads/${candidato.curriculo_pdf}" target="_blank" class="btn-ver-pdf-perfil">
+                    <a href="/uploads/${candidato.curriculo_pdf}" target="_blank" class="btn-ver-pdf-perfil">
                         <i class="fa-solid fa-eye"></i> Ver PDF
                     </a>
                 </div>
@@ -98,7 +98,7 @@ async function carregarCandidaturas(idCandidato) {
 
     try {
         // Realiza uma requisição GET assíncrona para buscar as candidaturas do candidato específico na API (corrigido '=-')
-        const resposta = await fetch(`http://localhost:3000/api/candidaturas/${idCandidato}`);
+        const resposta = await fetch(`/api/candidaturas/${idCandidato}`);
         
         // Se a resposta da API não for bem-sucedida
         if (!resposta.ok) {
@@ -206,7 +206,7 @@ if (formEditarPerfil) {
 
         try {
             // Envia os dados atualizados para a API do backend via requisição PUT utilizando FormData
-            const resposta = await fetch(`http://localhost:3000/api/candidatos/${idCandidato}`, {
+            const resposta = await fetch(`/api/candidatos/${idCandidato}`, {
                 method: 'PUT',
                 body: formData
             });

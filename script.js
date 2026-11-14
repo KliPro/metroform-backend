@@ -90,7 +90,7 @@ document.getElementById('form-cadastro-candidato').addEventListener('submit', as
 
     try {
         // Envia os dados para a API de registo de candidatos no servidor backend via requisição POST
-        const resposta = await fetch('http://localhost:3000/api/candidatos', {
+        const resposta = await fetch('/api/candidatos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosCandidato)
@@ -127,7 +127,7 @@ document.getElementById('form-login-candidato').addEventListener('submit', async
 
     try {
         // Envia as credenciais para a rota de autenticação de candidatos via método POST
-        const resposta = await fetch('http://localhost:3000/api/login', {
+        const resposta = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosLogin)
@@ -196,7 +196,7 @@ if (formModalRecuperar) {
 
         try {
             // Envia o e-mail e a nova palavra-passe para a API de recuperação no servidor
-            const resposta = await fetch('http://localhost:3000/api/recuperar-senha', {
+            const resposta = await fetch('/api/recuperar-senha', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, novaSenha })
@@ -292,7 +292,7 @@ async function carregarVagasNaHome() {
     if (!gridVagas) return; // Se o container de vagas não existir na página, interrompe a execução
 
     try {
-        const resposta = await fetch("http://localhost:3000/api/vagas"); // Requisição GET para buscar as vagas na API
+        const resposta = await fetch("/api/vagas"); // Requisição GET para buscar as vagas na API
         if (resposta.ok) {
             const vagas = await resposta.json();
 
@@ -369,7 +369,7 @@ function abrirModalBancoTalentos() {
                 formData.append('curriculo_pdf_existente', nomeCurriculo);
 
                 // Envia os dados do perfil atual diretamente para a API do Banco de Talentos via POST
-                const resposta = await fetch('http://localhost:3000/api/banco-talentos', {
+                const resposta = await fetch('/api/banco-talentos', {
                     method: 'POST',
                     body: formData
                 });
@@ -427,7 +427,7 @@ if (formBancoTalentos) {
 
         try {
             // Envia o formulário completo contendo os textos e o ficheiro binário para a API do backend
-            const resposta = await fetch('http://localhost:3000/api/banco-talentos', {
+            const resposta = await fetch('/api/banco-talentos', {
                 method: 'POST',
                 body: formData
             });
@@ -486,7 +486,7 @@ async function candidatarVaga(idVaga) {
     }
 
     try {
-        const resposta = await fetch('http://localhost:3000/api/candidaturas', {
+        const resposta = await fetch('/api/candidaturas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

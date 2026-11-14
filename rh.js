@@ -66,7 +66,7 @@ if (formCadastrarVaga) {
 
         try {
             // Envia os dados da nova vaga para a API do backend através de uma requisição POST assíncrona
-            const resposta = await fetch('http://localhost:3000/api/vagas', {
+            const resposta = await fetch('/api/vagas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(novaVaga)
@@ -98,7 +98,7 @@ async function carregarVagasPainelRH() {
 
     try {
         // Faz uma requisição GET para buscar todas as vagas registadas no sistema
-        const resposta = await fetch('http://localhost:3000/api/vagas');
+        const resposta = await fetch('/api/vagas');
         if (!resposta.ok) return;
 
         const vagas = await resposta.json();
@@ -146,7 +146,7 @@ async function excluirVaga(idVaga) {
 
     try {
         // Envia uma requisição DELETE para a API do backend contendo o ID da vaga
-        const resposta = await fetch(`http://localhost:3000/api/vagas/${idVaga}`, {
+        const resposta = await fetch(`/api/vagas/${idVaga}`, {
             method: 'DELETE'
         });
 
@@ -172,7 +172,7 @@ async function carregarCandidaturasRH() {
 
     try {
         // Busca as candidaturas associadas às vagas através da API restrita do RH
-        const resposta = await fetch('http://localhost:3000/api/candidaturas-rh');
+        const resposta = await fetch('/api/candidaturas-rh');
         if (!resposta.ok) return;
 
         const candidaturas = await resposta.json();
@@ -210,7 +210,7 @@ async function carregarBancoTalentosRH() {
 
     try {
         // Faz uma requisição GET para obter os currículos gerais do banco de talentos
-        const resposta = await fetch('http://localhost:3000/api/banco-talentos');
+        const resposta = await fetch('/api/banco-talentos');
         if (!resposta.ok) return;
 
         const dados = await resposta.json();
@@ -232,7 +232,7 @@ async function carregarBancoTalentosRH() {
                 <td>${talento.nome}</td>
                 <td>${talento.email}</td>
                 <td>${talento.telefone || '-'}</td>
-                <td><a href="http://localhost:3000/uploads/${talento.curriculo_pdf}" target="_blank" style="background-color: #f1f1f1; color: #7A0000; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 12px;">Ver PDF</a></td>
+                <td><a href="/uploads/${talento.curriculo_pdf}" target="_blank" style="background-color: #f1f1f1; color: #7A0000; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 12px;">Ver PDF</a></td>
                 <td>${new Date(talento.data_envio).toLocaleDateString('pt-BR')}</td>
                 <td>
                     <button onclick="excluirTalento(${idTalentoReal})" class="btn-profissional btn-vermelho" style="padding: 6px 10px; font-size: 12px; background-color: #d9534f; color: white; border: none; border-radius: 4px; cursor: pointer;">
@@ -256,7 +256,7 @@ async function excluirTalento(idTalento) {
 
     try {
         // Envia requisição DELETE para a API do backend com o ID do talento selecionado
-        const resposta = await fetch(`http://localhost:3000/api/banco-talentos/${idTalento}`, {
+        const resposta = await fetch(`/api/banco-talentos/${idTalento}`, {
             method: 'DELETE'
         });
 
@@ -277,7 +277,7 @@ async function excluirTalento(idTalento) {
 // Função assíncrona para carregar as métricas e estatísticas numéricas resumidas no topo do painel do RH
 async function carregarEstatisticasRH() {
     try {
-        const resposta = await fetch('http://localhost:3000/api/estatisticas-rh');
+        const resposta = await fetch('/api/estatisticas-rh');
         if (!resposta.ok) return;
 
         const dados = await resposta.json();
@@ -318,7 +318,7 @@ function abrirDetalhesCandidato(item) {
     // Configura o link para visualização do currículo em PDF anexo, se houver
     const pdfContainer = document.getElementById('modal-pdf-container');
     if (item.curriculo_pdf && item.curriculo_pdf !== 'null') {
-        pdfContainer.innerHTML = `<a href="http://localhost:3000/uploads/${item.curriculo_pdf}" target="_blank" style="color: #7A0000; font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Abrir Currículo em PDF</a>`;
+        pdfContainer.innerHTML = `<a href="/uploads/${item.curriculo_pdf}" target="_blank" style="color: #7A0000; font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Abrir Currículo em PDF</a>`;
     } else {
         pdfContainer.textContent = 'Nenhum currículo em anexo.';
     }
@@ -337,7 +337,7 @@ async function atualizarStatusCandidatura(novoStatus) {
 
     try {
         // Envia uma requisição PUT para a rota do backend responsável por atualizar o status da candidatura
-        const resposta = await fetch(`http://localhost:3000/api/candidaturas/${candidaturaSelecionadaId}/status`, {
+        const resposta = await fetch(`/api/candidaturas/${candidaturaSelecionadaId}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: novoStatus })
