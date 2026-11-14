@@ -376,3 +376,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor a correr na porta ${PORT}`);
 });
+
+const path = require('path');
+
+// Diz ao Express para servir todos os ficheiros estáticos da raiz do projeto
+app.use(express.static(__dirname));
