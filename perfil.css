@@ -1,0 +1,534 @@
+/* ========================================== */
+/* ESTILOS DA PÁGINA DE PERFIL - MODERNIZADO  */
+/* ========================================== */
+
+body.pagina-perfil-corpo {
+    /* Define a cor de fundo cinza claro para a página de perfil */
+    background-color: #f4f6f9;
+    /* Define a família de fontes padrão utilizada na página */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Remove a margem padrão do navegador */
+    margin: 0;
+    /* Remove o preenchimento padrão do navegador */
+    padding: 0;
+}
+
+.container-perfil {
+    /* Define a largura máxima permitida para o container de perfil (900px) */
+    max-width: 900px;
+    /* Centraliza o container horizontalmente na tela com margem de 40px em cima e embaixo */
+    margin: 40px auto;
+    /* Aplica espaçamento interno lateral de 20px */
+    padding: 0 20px;
+}
+
+.card-info-usuario,
+.card-curriculo,
+.card-candidaturas {
+    /* Define o fundo branco para os cartões informativos do perfil */
+    background: white;
+    /* Aplica espaçamento interno de 30px */
+    padding: 30px;
+    /* Arredonda as bordas dos cartões em 12px */
+    border-radius: 12px;
+    /* Adiciona uma sombra suave para dar efeito de profundidade flutuante */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    /* Adiciona uma borda superior com 4px de espessura na cor vermelha institucional (#7A0000) */
+    border-top: 4px solid #7A0000;
+    /* Adiciona margem inferior de 25px para separar os blocos */
+    margin-bottom: 25px;
+}
+
+.perfil-cabecalho {
+    /* Ativa o flexbox para alinhar a foto de avatar e os dados do usuário lado a lado */
+    display: flex;
+    /* Alinha verticalmente os itens ao centro */
+    align-items: center;
+    /* Define um espaço de 25px entre o avatar e as informações textuais */
+    gap: 25px;
+    /* Permite que os itens quebrem de linha caso o ecrã seja pequeno */
+    flex-wrap: wrap;
+}
+
+/* Avatar com suporte a imagem ou iniciais */
+.avatar-container {
+    /* Define a largura fixa do container do avatar em 100px */
+    width: 100px;
+    /* Define a altura fixa do container do avatar em 100px */
+    height: 100px;
+    /* Arredonda totalmente as bordas transformando o container num círculo perfeito (50%) */
+    border-radius: 50%;
+    /* Oculta qualquer conteúdo que transborde os limites circulares do container */
+    overflow: hidden;
+    /* Adiciona uma borda circular com 3px de espessura na cor vermelha institucional */
+    border: 3px solid #7A0000;
+    /* Utiliza flexbox para centralizar o conteúdo interno (foto ou iniciais) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Define um fundo cinza claro de segurança caso a imagem demore a carregar */
+    background-color: #f8f9fa;
+    /* Impede que o avatar encolha em layouts flexíveis */
+    flex-shrink: 0;
+}
+
+.foto-perfil {
+    /* Faz com que a imagem ocupe 100% da largura do container do avatar */
+    width: 100%;
+    /* Faz com que a imagem ocupe 100% da altura do container do avatar */
+    height: 100%;
+    /* Ajusta a imagem cobrindo todo o espaço sem distorcer as proporções (object-fit cover) */
+    object-fit: cover;
+}
+
+.avatar-inicial-perfil {
+    /* Faz com que o bloco de iniciais ocupe 100% da largura do avatar */
+    width: 100%;
+    /* Faz com que o bloco de iniciais ocupe 100% da altura do avatar */
+    height: 100%;
+    /* Define o fundo vermelho institucional para o avatar de iniciais */
+    background-color: #7A0000;
+    /* Define a cor do texto das iniciais como branco */
+    color: white;
+    /* Define o tamanho da fonte das iniciais para 32px */
+    font-size: 32px;
+    /* Deixa as letras das iniciais em negrito forte */
+    font-weight: bold;
+    /* Utiliza flexbox para centralizar perfeitamente as letras no círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dados-usuario h2 {
+    /* Remove margem superior/lateral e define margem inferior de 8px */
+    margin: 0 0 8px 0;
+    /* Define a cor do nome do usuário para um tom escuro (#222) */
+    color: #222;
+    /* Define o tamanho da fonte do nome para 24px */
+    font-size: 24px;
+}
+
+.dados-usuario p {
+    /* Define margens verticais de 5px e zera as laterais */
+    margin: 5px 0;
+    /* Define a cor dos parágrafos de dados para cinza médio (#555) */
+    color: #555;
+    /* Define o tamanho da fonte para 14px */
+    font-size: 14px;
+}
+
+.dados-usuario i {
+    /* Define a cor vermelha institucional para os ícones informativos */
+    color: #7A0000;
+    /* Adiciona margem à direita de 6px para distanciar o ícone do texto */
+    margin-right: 6px;
+    /* Define uma largura fixa de 16px para alinhar perfeitamente os ícones verticalmente */
+    width: 16px;
+}
+
+.resumo-profissional {
+    /* Adiciona margem superior de 25px para distanciar do bloco anterior */
+    margin-top: 25px;
+    /* Adiciona uma linha divisória cinza clara na parte superior do resumo */
+    border-top: 1px solid #eaeaea;
+    /* Adiciona espaçamento interno superior de 20px */
+    padding-top: 20px;
+}
+
+.resumo-profissional h4 {
+    /* Define a cor do título do resumo para cinza escuro (#333) */
+    color: #333;
+    /* Adiciona margem inferior de 8px */
+    margin-bottom: 8px;
+    /* Define o tamanho da fonte para 16px */
+    font-size: 16px;
+}
+
+.resumo-profissional h4 i {
+    /* Define a cor vermelha para o ícone do título do resumo */
+    color: #7A0000;
+    /* Adiciona margem à direita de 6px */
+    margin-right: 6px;
+}
+
+.resumo-profissional p {
+    /* Define a cor do texto do resumo profissional para cinza (#666) */
+    color: #666;
+    /* Define o tamanho da fonte para 14px */
+    font-size: 14px;
+    /* Aumenta o espaçamento entre linhas (line-height) para 1.6 facilitando a leitura */
+    line-height: 1.6;
+}
+
+/* Botões do Perfil */
+.acoes-perfil {
+    /* Adiciona margem superior de 25px */
+    margin-top: 25px;
+}
+
+.btn-editar-perfil-corporativo {
+    /* Define o fundo vermelho institucional para o botão de editar perfil */
+    background: #7A0000;
+    /* Define a cor do texto como branco */
+    color: white;
+    /* Remove a borda padrão */
+    border: none;
+    /* Aplica espaçamento interno (10px vertical e 20px horizontal) */
+    padding: 10px 20px;
+    /* Arredonda as pontas em 6px */
+    border-radius: 6px;
+    /* Deixa o texto em negrito */
+    font-weight: bold;
+    /* Define o tamanho da fonte para 14px */
+    font-size: 14px;
+    /* Altera o cursor para o formato de ponteiro (clicável) */
+    cursor: pointer;
+    /* Adiciona transição suave de 0.2 segundos para efeitos de cor */
+    transition: background 0.2s;
+    /* Exibe como flexbox em linha para alinhar o ícone e o texto perfeitamente */
+    display: inline-flex;
+    align-items: center;
+    /* Define um espaço de 8px entre o ícone e o texto */
+    gap: 8px;
+}
+
+.btn-editar-perfil-corporativo:hover {
+    /* Escurece a cor de fundo para um tom mais fechado ao passar o rato (hover) */
+    background: #5c0000;
+}
+
+.btn-sair-conta {
+    /* Define o fundo como transparente para o botão de sair */
+    background: transparent;
+    /* Adiciona uma borda fina na cor branca */
+    border: 1px solid white;
+    /* Define a cor do texto como branca */
+    color: white;
+    /* Aplica espaçamento interno (8px vertical e 16px horizontal) */
+    padding: 8px 16px;
+    /* Arredonda as pontas em 6px */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-sair-conta:hover {
+    /* Aplica um fundo branco translúcido (opacidade 0.1) ao passar o rato */
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.card-curriculo h3,
+.card-candidaturas h3 {
+    /* Define a cor vermelha institucional para os títulos dos cartões de currículo e candidaturas */
+    color: #7A0000;
+    /* Zera a margem superior */
+    margin-top: 0;
+    /* Adiciona margem inferior de 20px */
+    margin-bottom: 20px;
+    /* Define o tamanho da fonte para 18px */
+    font-size: 18px;
+}
+
+/* Área do Currículo */
+.curriculo-box-info {
+    /* Utiliza flexbox para alinhar os dados do currículo à esquerda e o botão à direita */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Define um fundo cinza muito claro para a caixa de informações do currículo */
+    background: #f8f9fa;
+    /* Aplica espaçamento interno (15px vertical e 20px horizontal) */
+    padding: 15px 20px;
+    /* Arredonda as bordas em 8px */
+    border-radius: 8px;
+    /* Adiciona uma borda fina e subtil na cor cinza claro (#eee) */
+    border: 1px solid #eee;
+}
+
+.btn-ver-pdf-perfil {
+    /* Define o fundo vermelho institucional para o botão de ver PDF */
+    background: #7A0000;
+    /* Define a cor do texto como branco */
+    color: white;
+    /* Aplica espaçamento interno (8px vertical e 16px horizontal) */
+    padding: 8px 16px;
+    /* Arredonda as pontas em 6px */
+    border-radius: 6px;
+    /* Remove o sublinhado padrão de links */
+    text-decoration: none;
+    /* Define o tamanho da fonte para 13px */
+    font-size: 13px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-ver-pdf-perfil:hover {
+    /* Escurece a cor de fundo ao passar o rato sobre o botão de ver PDF */
+    background: #5c0000;
+}
+
+/* Grid de Candidaturas */
+#grid-candidaturas {
+    /* Utiliza flexbox na direção de coluna para empilhar os cartões de candidaturas */
+    display: flex;
+    flex-direction: column;
+    /* Define um espaçamento de 15px entre cada item de candidatura */
+    gap: 15px;
+}
+
+.item-candidatura {
+    /* Aplica espaçamento interno (18px vertical e 20px horizontal) */
+    padding: 18px 20px;
+    /* Adiciona uma borda fina cinza claro ao redor do item */
+    border: 1px solid #eaeaea;
+    /* Arredonda as pontas em 8px */
+    border-radius: 8px;
+    /* Define o fundo branco para o item de candidatura */
+    background: #ffffff;
+    /* Utiliza flexbox para separar os dados da vaga (esquerda) e status/data (direita) */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* Adiciona uma sombra muito suave */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    /* Adiciona transição suave para efeitos de transformação/borda */
+    transition: transform 0.2s;
+}
+
+.item-candidatura:hover {
+    /* Destaca a borda do item com a cor vermelha institucional ao passar o rato (hover) */
+    border-color: #7A0000;
+}
+
+.item-candidatura h4 {
+    /* Zera a margem superior e lateral, deixando apenas 5px na parte inferior */
+    margin: 0 0 5px 0;
+    /* Define a cor do título da vaga para um tom escuro (#222) */
+    color: #222;
+    /* Define o tamanho da fonte para 16px */
+    font-size: 16px;
+}
+
+.tag-setor {
+    /* Define o tamanho da fonte pequeno (12px) para a tag de setor */
+    font-size: 12px;
+    /* Define a cor do texto da tag */
+    color: #555;
+    /* Define um fundo cinza claro para a etiqueta do setor */
+    background: #f1f3f5;
+    /* Aplica espaçamento interno compacto (4px vertical e 10px horizontal) */
+    padding: 4px 10px;
+    /* Arredonda as pontas da tag em 4px */
+    border-radius: 4px;
+    font-weight: 600;
+    /* Exibe como bloco em linha para respeitar margens e padding corretamente */
+    display: inline-block;
+    /* Adiciona margem à direita de 8px */
+    margin-right: 8px;
+}
+
+.local-candidatura {
+    /* Adiciona margens verticais específicas (6px em cima e 0 nas restantes) */
+    margin: 6px 0 0 0;
+    /* Define o tamanho da fonte para 13px */
+    font-size: 13px;
+    /* Define a cor do texto da localização como cinza médio */
+    color: #666;
+}
+
+.status-badge {
+    /* Exibe como bloco em linha */
+    display: inline-block;
+    /* Define um fundo verde muito claro/suave para o crachá de status positivo */
+    background: #e6fcf5;
+    /* Define a cor do texto do status como verde escuro (#0ca678) */
+    color: #0ca678;
+    /* Aplica espaçamento interno (6px vertical e 14px horizontal) */
+    padding: 6px 14px;
+    /* Arredonda totalmente as pontas criando o formato de pílula (20px) */
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.data-candidatura {
+    /* Define a cor cinza para a data da candidatura */
+    color: #888;
+    /* Define o tamanho da fonte para 12px */
+    font-size: 12px;
+    /* Exibe como bloco para quebrar linha automaticamente */
+    display: block;
+    /* Adiciona margem superior de 4px */
+    margin-top: 4px;
+}
+
+/* Modal de Edição de Perfil */
+.modal-overlay {
+    /* Fixa o overlay do modal cobrindo toda a janela de visualização (viewport) */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Aplica um fundo preto translúcido (opacidade 0.6) */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Oculta o modal por padrão */
+    display: none;
+    /* Utiliza flexbox para centralizar o conteúdo do modal */
+    justify-content: center;
+    align-items: center;
+    /* Define uma camada de empilhamento alta (z-index) */
+    z-index: 2000;
+}
+
+.modal-overlay:not(.oculto) {
+    /* Força a exibição em formato flex quando a classe 'oculto' for removida via JavaScript */
+    display: flex;
+}
+
+.modal-conteudo {
+    /* Define o fundo branco para a caixa interna do modal de edição */
+    background-color: #ffffff;
+    /* Aplica espaçamento interno de 30px */
+    padding: 30px;
+    /* Arredonda as pontas em 12px */
+    border-radius: 12px;
+    width: 100%;
+    /* Define a largura máxima do modal para 500px */
+    max-width: 500px;
+    /* Adiciona uma sombra marcante para destacar o modal flutuante */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* Adiciona uma borda superior vermelha institucional com 4px de espessura */
+    border-top: 4px solid #7A0000;
+    box-sizing: border-box;
+    /* Limita a altura máxima a 90% da altura da tela */
+    max-height: 90vh;
+    /* Adiciona rolagem vertical interna se o conteúdo for longo */
+    overflow-y: auto;
+}
+
+.modal-cabecalho-topo {
+    /* Utiliza flexbox para alinhar o título do modal e o botão de fechar nas extremidades */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-cabecalho-topo h3 {
+    margin: 0;
+    /* Define a cor vermelha institucional para o título do cabeçalho do modal */
+    color: #7A0000;
+    /* Define o tamanho da fonte para 1.25rem */
+    font-size: 1.25rem;
+}
+
+.btn-fechar-modal {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.grupo-input {
+    /* Adiciona margem inferior de 15px para separar os campos do formulário */
+    margin-bottom: 15px;
+}
+
+.grupo-input label {
+    /* Exibe a etiqueta (label) como bloco para ocupar a linha inteira acima do input */
+    display: block;
+    /* Adiciona margem inferior de 6px */
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+}
+
+.grupo-input input[type="text"],
+.grupo-input textarea,
+.grupo-input input[type="file"] {
+    /* Faz com que os campos de input, textarea e file ocupem 100% da largura disponível */
+    width: 100%;
+    /* Aplica espaçamento interno de 10px */
+    padding: 10px;
+    /* Adiciona uma borda fina cinza clara */
+    border: 1px solid #ddd;
+    /* Arredonda as pontas dos inputs em 6px */
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal-botoes {
+    /* Utiliza flexbox para alinhar os botões do rodapé do modal */
+    display: flex;
+    /* Define um espaço de 12px entre os botões de ação */
+    gap: 12px;
+    /* Adiciona margem superior de 25px */
+    margin-top: 25px;
+}
+
+.btn-cancelar {
+    /* Faz com que o botão de cancelar ocupe espaço igual flexível (flex: 1) */
+    flex: 1;
+    padding: 12px;
+    /* Define um fundo cinza (#6c757d) para indicar ação secundária/cancelamento */
+    background: #6c757d;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancelar:hover {
+    /* Escurece o tom de cinza ao passar o rato sobre o botão de cancelar */
+    background: #5a6268;
+}
+
+.btn-salvar-corporativo {
+    /* Faz com que o botão de salvar ocupe espaço igual flexível (flex: 1) */
+    flex: 1;
+    padding: 12px;
+    /* Define o fundo vermelho institucional para o botão de salvar alterações */
+    background: #7A0000;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-salvar-corporativo:hover {
+    /* Escurece a cor de fundo ao passar o rato sobre o botão de salvar */
+    background: #5c0000;
+}
+
+/* Botao de sair da pagina de perfil */
+.btn-sair-perfil {
+    /* Define o fundo vermelho institucional para o botão de sair da conta */
+    background-color: #7A0000;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+}
+
+.btn-sair-perfil:hover {
+    /* Escurece a cor de fundo ao passar o rato sobre o botão de sair */
+    background-color: #5c0000;
+}

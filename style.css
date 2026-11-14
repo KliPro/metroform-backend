@@ -1,0 +1,657 @@
+/* CONFIGURAÇÕES GERAIS E VARIÁVEIS DO SITE   */
+
+/* Torna a rolagem da página suave e animada ao clicar nos links de âncora do menu superior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Seletor universal (*): Aplica as regras de reset para todos os elementos da página */
+* {
+    margin: 0;        
+    padding: 0;       
+    box-sizing: border-box; /* Inclui padding e borda no cálculo total da largura/altura dos elementos */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Define a tipografia padrão limpa e moderna do sistema */
+}
+
+/* Raiz (:root): Armazena as cores oficiais da identidade visual da marca para reutilizar em todo o código */
+:root {
+    --metroform-red: #8B0000;   /* Cor primária: Vermelho/Vinho corporativo da Metroform */
+    --metroform-dark: #1a1a1a;  /* Cor escura: Tons de cinza bem escuro para textos e fundos de rodapé */
+    --metroform-gray: #f8f9fa;  /* Cor de fundo leve: Cinza claro neutro para destacar seções */
+}
+
+/* ESTILOS DO CABEÇALHO (HEADER) */
+
+/* Estilização da barra de cabeçalho superior fixa */
+.header-metroform {
+    display: flex; /* Utiliza Flexbox para alinhar os itens horizontalmente */
+    justify-content: space-between; /* Separa a logo à esquerda e os botões/links à direita */
+    align-items: center; /* Centraliza os elementos verticalmente no cabeçalho */
+    padding: 30px 5%; /* Define o espaçamento interno superior/inferior e lateral (5%) */
+    background-color: #ffffff; /* Fundo totalmente branco */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* Aplica uma sombra suave abaixo do cabeçalho */
+    position: sticky; /* Mantém o cabeçalho fixo no topo conforme o usuário rola a página */
+    top: 0; /* Posiciona colado no topo absoluto da tela */
+    z-index: 1000; /* Garante que o cabeçalho fique sobreposto aos outros elementos da página */
+    border-top: 4px solid var(--metroform-red); /* Detalhe visual de uma linha vermelha no topo da barra */
+}
+
+/* Estilização da imagem da logo dentro do cabeçalho */
+/* Estilização da imagem da logo dentro do cabeçalho */
+.logo img {
+    height: 40px;           /* Reduz ligeiramente para encaixar perfeitamente na barra */
+    max-width: 180px;       /* Garante uma largura máxima segura */
+    width: auto;            /* Mantém a proporção correta */
+    object-fit: contain;    /* Evita qualquer distorção da imagem */
+    display: block; 
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Container que agrupa os links do menu de navegação */
+.nav-links {
+    display: flex; /* Alinha os links lado a lado */
+    gap: 40px; /* Define um espaçamento uniforme entre cada link */
+}
+
+/* Estilização visual dos links textuais do menu */
+.nav-links a {
+    text-decoration: none; /* Remove o sublinhado padrão de links */
+    color: black; /* Cor escura elegante para os textos */
+    font-weight: 600; /* Deixa a fonte com espessura semi-negrito */
+    font-size: 13px; /* Tamanho de texto confortável para leitura */
+    transition: color 0.3s; /* Adiciona uma transição suave na mudança de cor */
+}
+
+/* Efeito visual ao passar o mouse por cima dos links do menu */
+.nav-links a:hover {
+    color: var(--metroform-red); /* O texto muda para a cor vermelha oficial da marca */
+}
+
+/* Container que agrupa os botões de ação rápida à direita do cabeçalho */
+.acesso-buttons {
+    display: flex; /* Alinha os botões lado a lado */
+    align-items: center; /* Centraliza os botões verticalmente */
+    gap: 12px; /* Espaço de 12 pixels entre os botões */
+}
+
+/* Estilização base compartilhada entre botões e links de acesso no cabeçalho */
+.acesso-buttons button, .acesso-buttons a {
+    text-decoration: none; /* Remove sublinhado se for tag <a> */
+    padding: 10px 20px; /* Espaçamento interno (altura e largura do botão) */
+    border-radius: 8px; /* Arredonda levemente os cantos */
+    font-size: 13px; /* Tamanho da fonte do botão */
+    font-weight: bold; /* Deixa o texto em negrito */
+    cursor: pointer; /* Muda o cursor do mouse para a mãozinha ao passar por cima */
+    transition: all 0.3s ease; /* Suaviza todas as animações de mudança */
+}
+
+/* Estilização do botão com borda vazada (Estilo profissional) */
+.btn-profissional {
+    border: 1px solid var(--metroform-red); /* Borda sólida na cor vermelha da marca */
+    color: var(--metroform-red); /* Texto interno na cor vermelha */
+    background-color: transparent; /* Fundo transparente */
+}
+
+/* Efeito ao passar o mouse sobre o botão profissional */
+.btn-profissional:hover {
+    background-color: var(--metroform-red); /* Preenche todo o fundo com a cor vermelha */
+    color: white; /* Torna o texto interno branco para contrastar */
+}
+
+/* SEÇÃO PRINCIPAL / BANNER DE DESTAQUE (HERO)*/
+
+/* Estilização do banner principal de destaque no topo da página */
+.secao-principal {
+    background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('img/banner.jpg') no-repeat center center/cover; /* Aplica um filtro escuro translúcido sobre a imagem de fundo de obra */
+    height: 90vh; /* O banner ocupa grande parte da altura total visível da tela */
+    display: flex; /* Alinha o conteúdo interno com Flexbox */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    text-align: center; /* Centraliza todo o texto */
+    color: white; /* Define a cor padrão dos textos como branca */
+    padding: 0 20px; /* Margem de segurança lateral de 20px */
+}
+
+/* Container que limita a largura máxima do texto dentro do banner */
+.conteudo-principal {
+    max-width: 900px; /* Largura máxima para o texto não esticar demais em telas grandes */
+    margin: 0 auto; /* Centraliza o bloco na horizontal */
+    width: 100%; /* Ocupa 100% do espaço disponível até o limite do max-width */
+}
+
+/* Estilização do título principal (H1) do banner */
+.conteudo-principal h1 {
+    font-size: 42px; /* Tamanho de letra grande e de forte impacto visual */
+    margin-bottom: 12px; /* Espaçamento inferior em relação ao parágrafo */
+    font-weight: 800; /* Negrito bem encorpado */
+}
+
+/* Estilização do parágrafo descritivo abaixo do título principal */
+.conteudo-principal p {
+    font-size: 17px; /* Tamanho confortável para leitura */
+    margin-bottom: 35px; /* Espaçamento inferior */
+    color: #ddd; /* Cor cinza claro suave */
+}
+
+/* ========================================== */
+/* SEÇÃO DE OPORTUNIDADES E VAGAS             */
+/* ========================================== */
+
+/* Estilização da seção de listagem de vagas */
+.secao-vagas {
+    padding: 70px 5%; /* Espaçamento interno grande em cima/baixo e nas laterais */
+    background-color: var(--metroform-gray); /* Fundo cinza claro para diferenciar visualmente das outras seções */
+}
+
+/* Container que centraliza e limita a largura máxima da seção de vagas em 1200px */
+.container-vagas {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Título principal da seção de vagas */
+.container-vagas h2 {
+    text-align: center;
+    font-size: 32px;
+    color: var(--metroform-dark);
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+/* Subtítulo descritivo da seção de vagas */
+.subtitulo-vagas {
+    text-align: center;
+    color: #666; /* Cinza médio */
+    margin-bottom: 45px;
+    font-size: 16px;
+}
+
+/* ESTILOS DO CARD DE OPORTUNIDADE EM DESTAQUE (PADRONIZADO) */
+.vaga-destaque-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 25px;            /* Podes ajustar o padding interno se quiseres mais compacto */
+    max-width: 400px;         /* Reduzido de 650px para 500px para ficar mais compacto e elegante */
+    margin: 0 auto 30px auto; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-top: 4px solid var(--metroform-red);
+    display: flex;
+    flex-direction: column;
+    gap: 12px; 
+    box-sizing: border-box;
+}
+
+/* Estilização do título da vaga em destaque */
+.vaga-destaque-card .vaga-titulo {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--metroform-dark);
+    margin-bottom: 4px;
+}
+
+/* Estilização das informações e requisitos do card de destaque */
+.vaga-destaque-card .vaga-info, 
+.vaga-destaque-card .vaga-requisitos {
+    font-size: 14px;
+    color: #444444;
+    line-height: 1.5;
+}
+
+/* Container para alinhar e centralizar o botão de candidatura no card */
+.vaga-acoes {
+    display: flex;
+    justify-content: center; /* Centraliza o botão perfeitamente no rodapé do card */
+    margin-top: 15px;
+}
+
+/* Estilização do botão "Candidatar-se" exclusivo do destaque */
+.btn-candidatar {
+    background-color: var(--metroform-red); /* Vermelho corporativo da marca */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Efeito ao passar o mouse no botão de candidatura */
+.btn-candidatar:hover {
+    background-color: #6b0000; /* Tom de vermelho mais escuro */
+    transform: translateY(-1px);
+}
+
+/* Container do botão para ver todas as vagas */
+.container-botoes-vagas {
+    text-align: center; /* Centraliza o botão */
+    margin-bottom: 15px;
+}
+
+/* Estilização do botão com borda escura "Ver Todas as Vagas" */
+.btn-todas-vagas {
+    display: inline-block;
+    background-color: transparent;
+    color: var(--metroform-dark);
+    border: 2px solid var(--metroform-dark); /* Borda sólida na cor escura */
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease; /* Transição suave para o efeito de hover */
+}
+
+/* Efeito ao passar o mouse no botão "Ver Todas as Vagas" */
+.btn-todas-vagas:hover {
+    background-color: var(--metroform-dark); /* Inverte preenchendo o fundo de escuro */
+    color: white; /* Texto fica branco */
+}
+
+/* Estilização padronizada para o botão de voltar */
+.btn-voltar {
+    display: inline-block;
+    background-color: var(--metroform-red);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-voltar:hover {
+    background-color: #6b0000;
+}
+
+/* Container centralizado para o link de envio de currículo espontâneo */
+.centro-banco-talentos {
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Container principal da grelha de vagas para limitar a largura e organizar em colunas */
+.grid-vagas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Organiza os cards dinamicamente */
+    gap: 25px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+/* Estilização individual de cada card de vaga para que não estiquem */
+.grid-vagas > div {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-left: 4px solid #8B0000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+/* Estilização do link para o banco geral de talentos */
+.link-banco {
+    color: var(--metroform-red); /* Cor vermelha oficial */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+
+/* Efeito ao passar o mouse sobre o link do banco de talentos */
+.link-banco:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+    color: #6b0000; /* Tom de vermelho mais escuro */
+}
+
+/* ========================================== */
+/* SEÇÃO DE CULTURA E VALORES                 */
+/* ========================================== */
+
+/* Estilização da seção de cultura da empresa */
+.secao-cultura {
+    padding: 70px 5%;
+    background-color: #ffffff; /* Fundo totalmente branco */
+}
+
+/* Container de largura máxima para a seção de cultura */
+.container-cultura {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Título da seção de cultura */
+.container-cultura h2 {
+    text-align: center;
+    font-size: 32px;
+    color: var(--metroform-dark);
+    margin-bottom: 45px;
+    font-weight: 700;
+}
+
+/* Grade Flexbox para organizar os 3 cartões de cultura lado a lado */
+.grid-cultura {
+    display: flex;
+    justify-content: space-between; /* Distribui os espaços uniformemente entre os cards */
+    gap: 30px; /* Espaço de 30px entre os cartões */
+    flex-wrap: nowrap; /* Impede que os cartões quebrem de linha em telas grandes */
+}
+
+/* Estilização individual de cada cartão cultural */
+.card-cultura {
+    flex: 1; /* Faz com que os três cartões dividam o espaço de forma perfeitamente igual */
+    background: #fafafa; /* Fundo cinza bem claro */
+    padding: 35px 25px; /* Espaçamento interno do cartão */
+    border-radius: 8px; /* Arredonda os cantos */
+    border: 1px solid #eaeaea; /* Borda sutil ao redor do card */
+    text-align: center;
+    transition: box-shadow 0.3s ease; /* Transição suave para o efeito de sombra no hover */
+}
+
+/* Efeito de elevação da sombra ao passar o mouse no cartão cultural */
+.card-cultura:hover {
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* Sombra mais marcada e elegante */
+}
+
+/* Estilização dos ícones vetoriais dentro dos cards culturais */
+.card-cultura i {
+    font-size: 30px; /* Tamanho grande para destacar o ícone */
+    color: var(--metroform-red); /* Cor vermelha da marca */
+    margin-bottom: 15px; /* Espaço abaixo do ícone */
+    display: block;
+}
+
+/* Título de cada item cultural */
+.card-cultura h3 {
+    font-size: 18px;
+    color: var(--metroform-dark);
+    margin-bottom: 10px;
+}
+
+/* Parágrafo descritivo do cartão cultural */
+.card-cultura p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6; /* Altura de linha aprimorada para leitura confortável */
+}
+
+/* ========================================== */
+/* SEÇÃO DE DIFERENCIAIS                      */
+/* ========================================== */
+
+/* Estilização da seção de diferenciais competitivos */
+.secao-diferenciais {
+    padding: 70px 5%;
+    background-color: #f4f6f8; /* Fundo cinza suave diferenciado */
+}
+
+/* Container de largura máxima para a seção de diferenciais */
+.container-diferenciais {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Título da seção de diferenciais */
+.container-diferenciais h2 {
+    text-align: center;
+    font-size: 32px;
+    color: var(--metroform-dark);
+    margin-bottom: 45px;
+    font-weight: 700;
+}
+
+/* Grade Flexbox para organizar os 3 itens de diferenciais lado a lado */
+.grid-diferenciais {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: nowrap;
+}
+
+/* Estilização individual de cada bloco de diferencial */
+.item-diferencial {
+    flex: 1; /* Divide o espaço igualmente em 3 partes */
+    background: white; /* Fundo branco em destaque sobre o cinza da seção */
+    padding: 35px 25px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03); /* Sombra muito sutil */
+    transition: transform 0.3s ease; /* Transição suave para o efeito de deslocamento */
+}
+
+/* Efeito de leve movimento para cima ao passar o mouse no diferencial */
+.item-diferencial:hover {
+    transform: translateY(-3px); /* Move o card levemente para cima */
+}
+
+/* Estilização dos ícones dentro dos diferenciais */
+.item-diferencial i {
+    font-size: 30px;
+    color: var(--metroform-red);
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* Título de cada diferencial */
+.item-diferencial h3 {
+    font-size: 18px;
+    color: var(--metroform-dark);
+    margin-bottom: 10px;
+}
+
+/* Descrição do diferencial */
+.item-diferencial p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* ========================================== */
+/* RODAPÉ DO SITE (FOOTER)                    */
+/* ========================================== */
+
+/* Estilização do rodapé institucional do site */
+.rodape-metroform {
+    background-color: var(--metroform-dark); /* Fundo preto/cinza escuro corporativo */
+    color: #fff; /* Texto padrão em branco */
+    text-align: center;
+    padding: 30px 5%;
+}
+
+/* Parágrafos gerais dentro do rodapé */
+.rodape-metroform p {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #ccc; /* Cinza claro para suavizar a leitura de direitos autorais */
+}
+
+/* Estilização específica para a nota de rodapé acadêmico */
+.texto-projeto {
+    font-size: 12px;
+    color: #888; /* Cinza mais escuro para diferenciar discretamente */
+}
+
+/* ========================================== */
+/* ESTILOS DOS MODAIS E FORMULÁRIOS           */
+
+/* Camada de fundo escuro translúcido para os modais flutuantes */
+.modal-overlay {
+    position: fixed; /* Fixa a sobreposição cobrindo toda a tela independentemente da rolagem */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo preto com 60% de opacidade (escuro e translúcido) */
+    display: none; /* Oculto por padrão (o JavaScript altera para flex ao abrir) */
+    justify-content: center; /* Centraliza a caixa branca horizontalmente */
+    align-items: center; /* Centraliza a caixa branca verticalmente */
+    z-index: 3000; /* Garante que fique acima de todos os outros elementos do site */
+}
+
+/* Caixa branca centralizada que abriga o conteúdo e formulários dos modais */
+.modal-box {
+    background-color: #ffffff; /* Fundo branco */
+    padding: 30px; /* Espaçamento interno */
+    border-radius: 10px; /* Cantos bem arredondados */
+    width: 100%;
+    max-width: 400px; /* Limita a largura máxima da caixa modal */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); /* Sombra marcante ao redor do modal */
+    border-top: 4px solid var(--metroform-red); /* Detalhe com a linha vermelha corporativa no topo da caixa */
+    box-sizing: border-box;
+    position: relative; /* Necessário para posicionar o botão de fechar "X" em relação à caixa */
+    max-height: 80vh; /* Altura máxima restrita a 80% da tela para evitar estouro */
+    overflow-y: auto; /* Adiciona barra de rolagem interna caso o conteúdo seja muito longo */
+}
+
+/* Botão de fechar ("X") posicionado no canto superior direito do modal */
+.modal-close {
+    position: absolute; /* Posicionamento absoluto em relação ao .modal-box */
+    top: 15px;
+    right: 15px;
+    background: transparent; /* Sem fundo */
+    border: none; /* Sem bordas */
+    font-size: 1.2rem; /* Tamanho grande para o símbolo "X" */
+    cursor: pointer;
+    color: #666;
+    font-weight: bold; 
+}
+
+/* Cabeçalho interno dos modais contendo título e subtítulo */
+.modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Título principal dentro do cabeçalho do modal */
+.modal-header h2 {
+    color: var(--metroform-red); /* Cor vermelha da marca */
+    margin: 0 0 5px 0;
+    font-size: 24px;
+}
+
+/* Subtítulo descritivo dentro do cabeçalho do modal */
+.modal-header p {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Container de botões que funcionam como abas de navegação (ex: Entrar vs Criar Conta) */
+.auth-tabs {
+    display: flex;
+    background: #f1f3f5; /* Fundo cinza claro para destacar a barra de abas */
+    padding: 4px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+/* Estilo base para os botões de cada aba */
+.auth-tab-btn {
+    flex: 1; /* Divide o espaço igualmente entre as abas */
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: #555;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* Estado visual aplicado quando a aba está selecionada e ativa */
+.auth-tab-btn.ativo {
+    background: white; /* Fundo branco para destacar a aba ativa */
+    color: var(--metroform-red); /* Texto na cor vermelha oficial */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil na aba ativa */
+}
+
+/* Bloco que agrupa cada campo de entrada de formulário (label + input) */
+.grupo-input {
+    margin-bottom: 15px; /* Espaço inferior entre os campos */
+    text-align: left;
+}
+
+/* Rótulo descritivo (label) acima de cada campo de input */
+.grupo-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Estilização dos campos de digitação (input type text, email, password) */
+.grupo-input input {
+    width: 100%; /* Ocupa toda a largura disponível da caixa */
+    padding: 10px; /* Preenchimento interno confortável */
+    border: 1px solid #ccc; /* Borda cinza padrão */
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none; /* Remove a linha de foco padrão feia do navegador */
+}
+
+/* Efeito visual ao clicar e focar em um campo de input */
+.grupo-input input:focus {
+    border-color: var(--metroform-red); /* A borda muda para a cor vermelha da marca */
+}
+
+/* Botão principal de envio dentro dos modais de autenticação */
+.btn-submit-auth {
+    width: 100%; /* Ocupa 100% da largura do formulário */
+    padding: 12px;
+    background-color: var(--metroform-red); /* Fundo vermelho corporativo */
+    color: white; /* Texto branco */
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+/* Efeito ao passar o mouse sobre o botão de envio de autenticação */
+.btn-submit-auth:hover {
+    background-color: #6b0000; /* Vermelho mais escuro indicando interatividade */
+}
+
+/* Alinhamento para links auxiliares (ex: "Esqueceu sua senha?") */
+.acoes-extras {
+    text-align: right; /* Joga o link para o canto direito */
+    margin-bottom: 20px;
+}
+
+/* Estilização do link de ações extras */
+.acoes-extras a {
+    color: var(--metroform-red);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+/* Efeito de sublinhado ao passar o mouse no link auxiliar */
+.acoes-extras a:hover {
+    text-decoration: underline;
+}
+
+/* Classe utilitária para ocultar elementos */
+.oculto {
+    display: none !important;
+}
+
+/* Garante que a sobreposição do modal utilize flexbox quando ativa */
+.modal-overlay[style*="display: flex"],
+.modal-fundo[style*="display: flex"] {
+    display: flex !important;
+}

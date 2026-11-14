@@ -1,0 +1,170 @@
+<!-- Declara o tipo de documento como HTML5 e define o padrão de codificação -->
+<!DOCTYPE html>
+<!-- Abre a tag raiz HTML e define o idioma principal da página como Português do Brasil -->
+<html lang="pt-BR">
+<!-- Cabeçalho contendo metadados, links de estilos e título da página -->
+<head>
+    <!-- Define a codificação de caracteres como UTF-8 para suportar acentuação e caracteres especiais -->
+    <meta charset="UTF-8">
+    <!-- Configura a escala visual da página para dispositivos móveis (responsividade) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Define o título da página exibido na aba do navegador -->
+    <title>Metroform - Meu Perfil</title>
+    <!-- Importação da biblioteca FontAwesome para utilização de ícones vetoriais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importação da folha de estilos global do projeto Metroform -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Importação da folha de estilos específica para a página de perfil -->
+    <link rel="stylesheet" href="perfil.css">
+</head>
+
+<!-- Corpo da página com classe específica para estilização do perfil -->
+<body class="pagina-perfil-corpo">
+    <!-- Cabeçalho principal da página de perfil -->
+    <header class="header-metroform">
+        <!-- Bloco contendo o logotipo corporativo com link de redirecionamento para a página inicial -->
+        <div class="logo">
+            <a href="index.html">
+                <img src="img/logo.jpg" alt="Logo Metroform">
+            </a>
+        </div>
+        
+        <!-- Botão localizado no topo para encerrar a sessão (logout) chamando a função correspondente -->
+        <button type="button" onclick="logout()" class="btn-sair-perfil">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair da Conta
+        </button>
+    </header>
+
+    <!-- Conteúdo principal estruturado dentro da classe container-perfil -->
+    <main class="container-perfil">
+        <!-- Cartão de Informações e Edição de Perfil do utilizador logado -->
+        <section class="card-info-usuario">
+            <div class="perfil-cabecalho">
+                <!-- Container wrapper para a imagem do avatar ou iniciais do utilizador -->
+                <div class="avatar-container" id="avatar-container-wrapper">
+                    <!-- A foto de perfil ou as iniciais entram aqui dinamicamente via JavaScript -->
+                    <img id="foto-preview" src="img/default-avatar.png" alt="Foto de Perfil" class="foto-perfil">
+                </div>
+                <!-- Bloco de dados textuais do perfil do utilizador -->
+                <div class="dados-usuario">
+                    <!-- Elemento título onde o nome completo do utilizador será injetado dinamicamente -->
+                    <h2 id="nome-exibir">Nome do Utilizador</h2>
+    
+                    <!-- Parágrafo de exibição da formação académica com ícone institucional -->
+                    <p id="formacao-exibir" style="color: #7A0000; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
+                        <i class="fa-solid fa-graduation-cap"></i> Formação não informada
+                    </p>
+
+                    <!-- Parágrafo de exibição do e-mail de contacto -->
+                    <p><i class="fa-solid fa-envelope"></i> <span id="email-exibir">-</span></p>
+    
+                    <!-- Parágrafo de exibição do número de telefone -->
+                    <p><i class="fa-solid fa-phone"></i> <span id="telefone-exibir">Não informado</span></p>
+    
+                    <!-- Parágrafo de exibição da cidade/morada -->
+                    <p id="cidade-exibir">
+                        <i class="fa-solid fa-location-dot"></i> Endereço não informado
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Seção dedicada à exibição do resumo profissional do candidato -->
+            <div class="resumo-profissional">
+                <h4><i class="fa-solid fa-id-card"></i> Resumo Profissional</h4>
+                <!-- Parágrafo dinâmico onde o resumo inserido pelo utilizador será exibido -->
+                <p id="resumo-exibir">Adicione um resumo sobre a sua experiência profissional...</p>
+            </div>
+
+            <!-- Área de ações do perfil contendo o botão para abrir o modal de edição -->
+            <div class="acoes-perfil">
+                <button onclick="abrirModalEdicao()" class="btn-editar-perfil-corporativo">
+                    <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
+                </button>
+            </div>
+        </section>
+
+        <!-- Cartão de Currículo em PDF -->
+        <section class="card-curriculo">
+            <h3><i class="fa-solid fa-file-pdf" style="color: #7A0000;"></i> Meu Currículo</h3>
+            <!-- Container dinâmico onde o status do currículo ou botão de visualização será injetado -->
+            <div id="status-curriculo">
+                <p style="color: #666;">Nenhum currículo em PDF enviado.</p>
+            </div>
+        </section>
+
+        <!-- Cartão de listagem das candidaturas efetuadas pelo candidato -->
+        <section class="card-candidaturas">
+            <h3><i class="fa-solid fa-briefcase" style="color: #7A0000;"></i> Minhas Candidaturas</h3>
+            <!-- Container onde as vagas subscritas pelo utilizador serão carregadas via JavaScript -->
+            <div id="grid-candidaturas">
+                <p class="carregando-candidaturas">A carregar candidaturas...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE EDIÇÃO DE PERFIL (Oculto por padrão através da classe 'oculto') -->
+    <div id="modal-edicao" class="modal-overlay oculto">
+        <div class="modal-conteudo">
+            <!-- Cabeçalho interno do modal de edição -->
+            <div class="modal-cabecalho-topo">
+                <h3><i class="fa-solid fa-user-pen"></i> Editar Meu Perfil</h3>
+                <!-- Botão para fechar o modal chamando a função correspondente -->
+                <button type="button" onclick="fecharModalEdicao()" class="btn-fechar-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <!-- Formulário para atualização dos dados cadastrais com suporte a ficheiros (enctype multipart/form-data) -->
+            <form id="form-editar-perfil" enctype="multipart/form-data">
+                <!-- Grupo de input para alteração do nome completo -->
+                <div class="grupo-input">
+                    <label for="edit-nome">Nome Completo</label>
+                    <input type="text" id="edit-nome" required>
+                </div>
+                
+                <!-- Grupo de input para alteração do número de telefone -->
+                <div class="grupo-input">
+                    <label for="edit-telefone">Telefone</label>
+                    <input type="text" id="edit-telefone" placeholder="(11) 99999-9999">
+                </div>
+
+                <!-- Grupo de input para alteração da formação académica -->
+                <div class="grupo-input">
+                    <label for="edit-formacao">Formação / O que é formado</label>
+                    <input type="text" id="edit-formacao" placeholder="Ex: Bacharel em Ciência da Computação">
+                </div>
+
+                <!-- Grupo de input para alteração da cidade e estado onde reside -->
+                <div class="grupo-input">
+                    <label for="edit-cidade">Onde Mora (Cidade / Estado)</label>
+                    <input type="text" id="edit-cidade" placeholder="Ex: Guarulhos - SP">
+                </div>
+
+                <!-- Grupo de input para edição do resumo profissional em formato textarea -->
+                <div class="grupo-input">
+                    <label for="edit-resumo">Resumo Profissional</label>
+                    <textarea id="edit-resumo" rows="4" placeholder="Conte um pouco sobre a sua experiência..."></textarea>
+                </div>
+
+                <!-- Grupo de input para upload de nova foto de perfil -->
+                <div class="grupo-input">
+                    <label for="edit-foto">Foto de Perfil (Imagem)</label>
+                    <input type="file" id="edit-foto" accept="image/*">
+                </div>
+
+                <!-- Grupo de input para upload de novo currículo em formato PDF -->
+                <div class="grupo-input">
+                    <label for="edit-curriculo">Currículo em PDF</label>
+                    <input type="file" id="edit-curriculo" accept=".pdf">
+                </div>
+
+                <!-- Rodapé do modal contendo os botões de cancelar e submeter alterações -->
+                <div class="modal-botoes">
+                    <button type="button" onclick="fecharModalEdicao()" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar-corporativo">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conecta o ficheiro JavaScript externo responsável pela lógica da página de perfil -->
+    <script src="perfil.js"></script>
+</body>
+</html>

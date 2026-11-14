@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metroform - Painel do RH / Gestor</title>
+    
+    <!-- Importação de biblioteca externa de ícones (FontAwesome) para utilização de ícones vetoriais no painel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importação da folha de estilos global do projeto -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Importação da folha de estilos específica e dedicada ao painel de Recursos Humanos (RH) -->
+    <link rel="stylesheet" href="rh.css">
+</head>
+<body class="pagina-rh">
+
+    <!-- Cabeçalho principal restrito do painel de RH -->
+    <header class="header-metroform">
+        <!-- Bloco contendo o logotipo institucional da Metroform com redirecionamento para a página inicial -->
+        <div class="logo">
+            <a href="index.html">
+                <img src="img/logo.jpg" alt="Logo Metroform">
+            </a>
+        </div>
+
+        <!-- Área de identificação do perfil logado e botão de saída no topo direito -->
+        <div class="rh-perfil-topo">
+            <span class="nome-gestor"></span>
+            <!-- Botão de logout que dispara a função JavaScript de encerramento da sessão administrativa -->
+            <button type="button" onclick="logoutGestor()" class="btn-sair">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
+        </div>
+    </header>
+
+    <!-- Corpo principal da página do painel administrativo de RH -->
+    <main class="container-rh">
+        
+        <!-- Título principal e descrição contextual do painel de gestão -->
+        <div class="rh-cabecalho-secao">
+            <h2>Painel de Controle de Vagas e Candidatos</h2>
+            <p>Gerencie as oportunidades em aberto e acompanhe os candidatos com melhor compatibilidade (Match).</p>
+        </div>
+
+      <!-- Cards de resumo rápido para exibição de métricas numéricas do sistema -->
+<div class="rh-cards-metricas">
+    <!-- Card indicador de Vagas Ativas -->
+    <div class="metrica-card">
+        <i class="fa-solid fa-briefcase"></i>
+        <div>
+            <!-- O ID contador-vagas é preenchido dinamicamente via script.js/rh.js -->
+            <h3 id="contador-vagas">0</h3>
+            <p>Vagas Ativas</p>
+        </div>
+    </div>
+    <!-- Card indicador de Candidatos Inscritos -->
+    <div class="metrica-card">
+        <i class="fa-solid fa-users"></i>
+        <div>
+            <!-- O ID contador-candidatos é atualizado dinamicamente pelo backend -->
+            <h3 id="contador-candidatos">0</h3>
+            <p>Candidatos Inscritos</p>
+        </div>
+    </div>
+</div>
+
+        <!-- 1. SEÇÃO: Tabela de Candidatos Recentes no Processo Seletivo -->
+        <div class="rh-tabela-container">
+            <div class="tabela-topo">
+                <h3>Candidatos Recentes no Processo Seletivo</h3>
+                <!-- Botão que aciona a abertura do modal para publicação de nova vaga -->
+                <button class="btn-nova-vaga" onclick="abrirModalVaga()"><i class="fa-solid fa-plus"></i> Cadastrar Nova Vaga</button>
+            </div>
+
+            <!-- Tabela estruturada para listagem dos candidatos em processos ativos -->
+            <table class="tabela-gestao">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Vaga Desejada</th>
+                        <th>Setor</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-candidatos-rh">
+                    <!-- As linhas desta tabela são injetadas dinamicamente via função JavaScript no rh.js -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. SEÇÃO: Banco Geral de Talentos (Currículos enviados espontaneamente) -->
+        <div class="rh-tabela-container secao-banco-talentos-rh" style="margin-top: 30px;">
+            <div class="tabela-topo">
+                <div class="titulo-banco-rh">
+                    <h3><i class="fa-solid fa-users-viewfinder"></i> Currículos - Banco Geral de Talentos</h3>
+                    <p>Profissionais que enviaram o currículo espontaneamente pelo site.</p>
+                </div>
+            </div>
+
+            <!-- Tabela dedicada à exibição dos profissionais do banco de talentos geral -->
+            <table class="tabela-gestao">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Currículo</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-banco-talentos">
+                    <!-- Os registos do banco de talentos são preenchidos dinamicamente pelo script rh.js -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. SEÇÃO: Oportunidades Cadastradas (Gestão e Exclusão de Vagas pelo RH) -->
+        <div class="rh-tabela-container" style="margin-top: 30px;">
+            <div class="tabela-topo">
+                <div class="titulo-banco-rh">
+                    <h3><i class="fa-solid fa-briefcase"></i> Oportunidades Cadastradas (Gestão)</h3>
+                    <p>Lista de todas as vagas ativas publicadas. Pode excluir as que já foram preenchidas.</p>
+                </div>
+            </div>
+
+            <!-- Container onde a listagem interativa de vagas cadastradas é renderizada via script -->
+            <div id="lista-vagas-rh" style="padding: 15px;">
+                <!-- Preenchido automaticamente pelas funções de gestão do rh.js -->
+            </div>
+        </div>
+    
+    </main>
+
+    <!-- Modal de Detalhes, Análise e Aprovação/Reprovação do Candidato -->
+    <div id="modal-curriculo" class="modal-fundo oculto">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3>Detalhes do Currículo / Perfil Completo</h3>
+                <!-- Botão para fechar o modal chamando a função correspondente -->
+                <button class="btn-fechar" onclick="fecharModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Corpo interno do modal estruturado com barra de rolagem restrita -->
+            <div class="modal-corpo" style="max-height: 70vh; overflow-y: auto;">
+                <p><strong>Candidato(a):</strong> <span id="modal-nome">---</span></p>
+                <p><strong>E-mail:</strong> <span id="modal-email">---</span></p>
+                <p><strong>Telefone:</strong> <span id="modal-telefone">---</span></p>
+                <p><strong>Cidade:</strong> <span id="modal-cidade">---</span></p>
+                <p><strong>Formação:</strong> <span id="modal-formacao">---</span></p>
+                <hr class="modal-divisor">
+                <p><strong>Vaga Pretendida:</strong> <span id="modal-vaga">---</span></p>
+                <p><strong>Setor:</strong> <span id="modal-setor">---</span></p>
+                <p><strong>Compatibilidade (Match):</strong> <span id="modal-match">---</span></p>
+                <hr class="modal-divisor">
+                <p><strong>Resumo Profissional / Habilidades:</strong></p>
+                <p id="modal-resumo" class="modal-texto-resumo">---</p>
+                <hr class="modal-divisor">
+                <p><strong>Documento / Currículo Anexado:</strong> <span id="modal-pdf-container">---</span></p>
+            </div>
+
+            <!-- Rodapé do modal contendo as ações de tomada de decisão do RH -->
+            <div class="modal-rodape">
+                <!-- Botão para reprovar o candidato (atualiza o status via API) -->
+                <button class="btn-rejeitar" onclick="atualizarStatusCandidatura('Reprovado')">Reprovar</button>
+                <!-- Botão para aprovar o candidato no processo seletivo -->
+                <button class="btn-aprovar-modal" onclick="atualizarStatusCandidatura('Aprovado')">Aprovar Candidato</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro de Nova Vaga pela Perspectiva do RH -->
+    <div id="modal-nova-vaga" class="modal-fundo oculto">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3>Cadastrar Nova Oportunidade</h3>
+                <!-- Botão para fechar o modal de nova vaga -->
+                <button class="btn-fechar" onclick="fecharModalVaga()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-corpo">
+                <!-- Formulário para submissão dos dados da nova vaga corporativa -->
+                <form id="form-cadastrar-vaga">
+                    <div class="grupo-input">
+                        <label for="input-titulo-vaga">Título do Cargo</label>
+                        <input type="text" id="input-titulo-vaga" placeholder="Ex: Desenvolvedor Front-End" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="input-setor-vaga">Setor</label>
+                        <input type="text" id="input-setor-vaga" placeholder="Ex: Tecnologia / Engenharia" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="input-local-vaga">Localização</label>
+                        <input type="text" id="input-local-vaga" placeholder="Ex: Guarulhos / SP" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="input-requisitos-vaga">Requisitos Principais</label>
+                        <input type="text" id="input-requisitos-vaga" placeholder="Ex: Experiência com HTML, CSS e Git." required>
+                    </div>
+
+                    <div class="grupo-botoes-form">
+                        <!-- Botão de submissão do formulário de criação de vagas -->
+                        <button type="submit" class="btn-aprovar-modal">Publicar Vaga</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importação do script de controle e interatividade do painel de RH -->
+    <script src="rh.js"></script>
+</body>
+</html>

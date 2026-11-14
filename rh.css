@@ -1,0 +1,579 @@
+/* ========================================== */
+/* ESTILOS DO PAINEL DO RH / GESTOR           */
+/* ========================================== */
+
+/* Cabeçalho do Painel RH */
+.header-metroform {
+    /* Define o layout como flexbox para organizar os elementos filhos em linha */
+    display: flex;
+    /* Distribui o espaço horizontal uniformemente, posicionando a logo na esquerda e o perfil na direita */
+    justify-content: space-between;
+    /* Alinha verticalmente os itens ao centro do cabeçalho */
+    align-items: center;
+    /* Define o espaçamento interno (20px em cima/baixo e 5% nas laterais) */
+    padding: 20px 5%;
+    /* Define a cor de fundo branca para o cabeçalho */
+    background-color: #ffffff;
+    /* Adiciona uma sombra suave na parte inferior do cabeçalho */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    /* Adiciona uma borda superior decorativa na cor vermelha institucional (#8B0000) */
+    border-top: 4px solid #8B0000;
+}
+
+.rh-perfil-topo {
+    /* Ativa o flexbox para alinhar o texto do gestor e o botão de sair em linha */
+    display: flex;
+    /* Alinha os itens verticalmente ao centro */
+    align-items: center;
+    /* Define um espaço de 20px entre os elementos do topo */
+    gap: 20px;
+}
+
+.nome-gestor {
+    /* Deixa o texto do nome do gestor seminegrito */
+    font-weight: 600;
+    /* Define a cor do texto para cinza escuro */
+    color: #333;
+    /* Define o tamanho da fonte para 14px */
+    font-size: 14px;
+}
+
+.btn-sair {
+    /* Define o fundo vermelho institucional para o botão de sair */
+    background-color: #8B0000;
+    /* Define a cor do texto como branco */
+    color: white;
+    /* Aplica espaçamento interno (8px vertical e 16px horizontal) */
+    padding: 8px 16px;
+    /* Arredonda as pontas do botão em 6px */
+    border-radius: 6px;
+    /* Remove o sublinhado padrão de links */
+    text-decoration: none;
+    /* Deixa o texto do botão em negrito */
+    font-weight: bold;
+    /* Define o tamanho da fonte para 13px */
+    font-size: 13px;
+    /* Adiciona uma transição suave de 0.2 segundos para efeitos de cor */
+    transition: background 0.2s;
+    /* Exibe como flexbox em linha para alinhar o ícone e o texto perfeitamente */
+    display: inline-flex;
+    /* Alinha os itens internos ao centro */
+    align-items: center;
+    /* Define um espaçamento de 6px entre o ícone e o texto */
+    gap: 6px;
+}
+
+.btn-sair:hover {
+    /* Altera a cor de fundo para um tom de vermelho mais escuro ao passar o cursor */
+    background-color: #6b0000;
+}
+
+body.pagina-rh {
+    /* Define uma cor de fundo cinza clara padrão para a página de RH */
+    background-color: #f4f6f9;
+    /* Remove a margem padrão do navegador */
+    margin: 0;
+    /* Remove o preenchimento padrão do navegador */
+    padding: 0;
+}
+
+/* Container centralizado do painel do RH */
+.container-rh {
+    /* Define a largura máxima permitida para o container do painel (1200px) */
+    max-width: 1200px;
+    /* Centraliza o container horizontalmente na tela com margem de 40px em cima e embaixo */
+    margin: 40px auto;
+    /* Aplica espaçamento interno lateral de 20px */
+    padding: 0 20px;
+    /* Garante que o padding e a largura total sejam calculados corretamente no box model */
+    box-sizing: border-box;
+}
+
+/* Cabeçalho da seção do painel */
+.rh-cabecalho-secao {
+    /* Adiciona margem inferior de 30px para distanciar do conteúdo seguinte */
+    margin-bottom: 30px;
+}
+
+.rh-cabecalho-secao h2 {
+    /* Zera as margens superior/lateral e define margem inferior de 8px */
+    margin: 0 0 8px 0;
+    /* Define a cor do título principal para quase preto (#1a1a1a) */
+    color: #1a1a1a;
+    /* Define o tamanho da fonte para 26px */
+    font-size: 26px;
+    /* Deixa o título em negrito forte (700) */
+    font-weight: 700;
+}
+
+.rh-cabecalho-secao p {
+    /* Define a cor do parágrafo de descrição para cinza médio (#666) */
+    color: #666;
+    /* Remove margens padrão */
+    margin: 0;
+    /* Define o tamanho da fonte para 15px */
+    font-size: 15px;
+}
+
+/* ========================================== */
+/* CARDS DE MÉTRICAS (CENTRALIZADOS)          */
+/* ========================================== */
+.rh-cards-metricas {
+    display: flex;
+    justify-content: center; /* Centraliza os cartões horizontalmente no meio da tela */
+    gap: 24px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Garante que se adaptem bem caso o ecrã seja menor */
+}
+
+.metrica-card {
+    /* Faz com que cada cartão ocupe o espaço de forma igual e proporcional, com limite máximo */
+    flex: 1;
+    max-width: 380px; 
+    min-width: 280px; /* Garante um tamanho ideal em ecrãs menores */
+    background: #ffffff;
+    padding: 24px 28px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-left: 5px solid #8B0000;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito elegante ao passar o rato por cima do cartão */
+.metrica-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(139, 0, 0, 0.08);
+}
+
+.metrica-card i {
+    font-size: 2rem;
+    color: #8B0000;
+    background: rgba(139, 0, 0, 0.06);
+    padding: 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metrica-card h3 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.1;
+}
+
+.metrica-card p {
+    margin: 4px 0 0 0;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ========================================== */
+/* TABELAS DE GESTÃO E CONTEÚDOS              */
+/* ========================================== */
+.rh-tabela-container {
+    /* Define fundo branco para os blocos de tabelas */
+    background: #ffffff;
+    /* Aplica espaçamento interno de 25px */
+    padding: 25px;
+    /* Arredonda as bordas em 12px */
+    border-radius: 12px;
+    /* Adiciona sombra suave ao container da tabela */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    /* Adiciona margem inferior de 30px */
+    margin-bottom: 30px;
+    /* Permite rolagem horizontal automática caso a tabela exceda a largura */
+    overflow-x: auto;
+}
+
+.tabela-topo {
+    /* Utiliza flexbox para alinhar o título da tabela e os botões de ação superior */
+    display: flex;
+    /* Separa os itens nas extremidades opostas */
+    justify-content: space-between;
+    /* Alinha verticalmente ao centro */
+    align-items: center;
+    /* Adiciona margem inferior de 20px */
+    margin-bottom: 20px;
+    /* Permite que os itens quebrem de linha se o espaço for insuficiente */
+    flex-wrap: wrap;
+    /* Define um espaçamento de segurança de 15px entre os elementos flexíveis */
+    gap: 15px;
+}
+
+.tabela-topo h3 {
+    /* Remove margens padrão */
+    margin: 0;
+    /* Define a cor do título da seção da tabela */
+    color: #1a1a1a;
+    /* Define o tamanho da fonte para 18px */
+    font-size: 18px;
+}
+
+.tabela-gestao {
+    /* Faz com que a tabela ocupe 100% da largura disponível */
+    width: 100%;
+    /* Junta as bordas das células da tabela eliminando espaços duplos */
+    border-collapse: collapse;
+    /* Adiciona margem superior de 10px */
+    margin-top: 10px;
+}
+
+.tabela-gestao th,
+.tabela-gestao td {
+    /* Aplica espaçamento interno de 15px nas células da tabela */
+    padding: 15px;
+    /* Alinha o texto das células à esquerda */
+    text-align: left;
+    /* Adiciona uma linha divisória cinza clara na parte inferior de cada célula */
+    border-bottom: 1px solid #eaeaea;
+    /* Define o tamanho da fonte para 14px */
+    font-size: 14px;
+}
+
+.tabela-gestao th {
+    /* Define um fundo cinza muito claro para o cabeçalho da tabela */
+    background-color: #f8f9fa;
+    /* Define a cor do texto do cabeçalho */
+    color: #333;
+    /* Deixa o texto do cabeçalho em negrito */
+    font-weight: bold;
+}
+
+/* Botão de cadastrar vaga */
+.btn-nova-vaga {
+    /* Define o fundo vermelho institucional para o botão */
+    background-color: #8B0000;
+    /* Define a cor do texto como branco */
+    color: white;
+    /* Remove a borda padrão */
+    border: none;
+    /* Aplica espaçamento interno (10px vertical e 18px horizontal) */
+    padding: 10px 18px;
+    /* Arredonda as pontas em 6px */
+    border-radius: 6px;
+    /* Deixa o texto em negrito */
+    font-weight: bold;
+    /* Altera o cursor para o formato de ponteiro (clicável) */
+    cursor: pointer;
+    /* Define o tamanho da fonte para 13px */
+    font-size: 13px;
+    /* Adiciona transição suave para a cor de fundo */
+    transition: background 0.3s;
+}
+
+.btn-nova-vaga:hover {
+    /* Escurece a cor de fundo ao passar o cursor sobre o botão */
+    background-color: #6b0000;
+}
+
+/* ========================================== */
+/* CORREÇÃO DOS MODAIS (OCULTOS POR PADRÃO)   */
+/* ========================================== */
+.modal-fundo,
+.modal-overlay, 
+.oculto {
+    /* Força os elementos de modal e classes de ocultação a ficarem invisíveis por padrão */
+    display: none !important;
+}
+
+/* Quando ativados via JavaScript */
+.modal-fundo.ativo,
+.modal-overlay.ativo,
+.modal-fundo:not(.oculto),
+.modal-overlay:not(.oculto) {
+    /* Torna o modal visível utilizando display flex com prioridade máxima */
+    display: flex !important;
+    /* Fixa o fundo do modal em relação à janela de visualização (viewport) */
+    position: fixed;
+    /* Posiciona o topo no inicio da tela */
+    top: 0;
+    /* Posiciona a esquerda no inicio da tela */
+    left: 0;
+    /* Ocupa 100% da largura da tela */
+    width: 100%;
+    /* Ocupa 100% da altura da tela */
+    height: 100%;
+    /* Aplica um fundo preto translúcido (opacidade 0.6) para cobrir o conteúdo de trás */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Centraliza o conteúdo horizontalmente */
+    justify-content: center;
+    /* Centraliza o conteúdo verticalmente */
+    align-items: center;
+    /* Define uma camada de empilhamento alta (z-index) para garantir prioridade visual */
+    z-index: 2000;
+}
+
+/* ========================================== */
+/* CORREÇÃO DEFINITIVA DOS MODAIS DO RH       */
+/* ========================================== */
+.modal-fundo,
+.modal-overlay, 
+.oculto {
+    /* Reforça a ocultação padrão dos modais e elementos marcados como ocultos */
+    display: none !important;
+}
+
+/* Quando o modal é ativado via JavaScript (Regra estendida para compatibilidade) */
+.modal-fundo.ativo,
+.modal-overlay.ativo,
+.modal-fundo:not(.oculto),
+.modal-overlay:not(.oculto) {
+    /* Força a exibição centralizada via flexbox com prioridade absoluta */
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* Utiliza 100vw para garantir largura total da viewport */
+    width: 100vw;
+    /* Utiliza 100vh para garantir altura total da viewport */
+    height: 100vh;
+    /* Aplica um fundo escurecido ligeiramente mais opaco (0.65) */
+    background-color: rgba(0, 0, 0, 0.65);
+    justify-content: center;
+    align-items: center;
+    /* Eleva o z-index para 9999 garantindo prioridade absoluta sobre outros elementos */
+    z-index: 9999;
+}
+
+/* Caixa branca centralizada do conteúdo do modal */
+.modal-conteudo {
+    /* Define o fundo branco para a caixa interna do modal */
+    background-color: #ffffff;
+    /* Aplica espaçamento interno de 30px */
+    padding: 30px;
+    /* Arredonda as pontas em 12px */
+    border-radius: 12px;
+    /* Garante largura total respeitando o limite máximo */
+    width: 100%;
+    /* Define a largura máxima padrão do modal para 500px */
+    max-width: 500px;
+    /* Adiciona uma sombra marcante para dar efeito de profundidade flutuante */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    /* Adiciona uma borda superior vermelha institucional com 4px de espessura */
+    border-top: 4px solid #8B0000;
+    /* Inclui padding e borda no cálculo total das dimensões */
+    box-sizing: border-box;
+    /* Limita a altura máxima do modal a 90% da altura da tela */
+    max-height: 90vh;
+    /* Adiciona barra de rolagem vertical interna caso o conteúdo exceda a altura */
+    overflow-y: auto;
+    /* Define posição relativa para gerenciar elementos internos posicionados */
+    position: relative;
+}
+
+.modal-cabecalho {
+    /* Utiliza flexbox para alinhar o título e o botão de fechar do modal */
+    display: flex;
+    /* Separa o título (esquerda) do botão fechar (direita) */
+    justify-content: space-between;
+    /* Alinha verticalmente ao centro */
+    align-items: center;
+    /* Adiciona margem inferior de 20px */
+    margin-bottom: 20px;
+}
+
+.modal-cabecalho h3 {
+    /* Zera as margens do título do modal */
+    margin: 0;
+    /* Define a cor do título do modal como vermelho institucional */
+    color: #8B0000;
+    /* Define o tamanho da fonte para 20px */
+    font-size: 20px;
+}
+
+.btn-fechar {
+    /* Remove o fundo padrão do botão de fechar (X) */
+    background: none;
+    /* Remove a borda padrão */
+    border: none;
+    /* Define o tamanho do ícone/texto de fechar */
+    font-size: 1.2rem;
+    /* Altera o cursor para o formato de ponteiro */
+    cursor: pointer;
+    /* Define a cor cinza para o botão de fechar */
+    color: #666;
+}
+
+/* --- Melhorias Estéticas para o Modal de Detalhes do Currículo --- */
+.modal-conteudo {
+    /* Reforça a estilização de fundo branco e arredondamento para o modal de detalhes */
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    /* Ajusta a largura máxima para 550px para acomodar melhor os dados do currículo */
+    max-width: 550px;
+    /* Garante que o modal ocupe 90% da largura em telas menores */
+    width: 90%;
+}
+
+.modal-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Adiciona uma linha divisória cinza clara abaixo do cabeçalho do modal */
+    border-bottom: 2px solid #f0f0f0;
+    /* Aplica espaçamento inferior de 12px abaixo da linha */
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.modal-cabecalho h3 {
+    /* Define uma tonalidade específica de vermelho (#7A0000) para o título do modal de currículo */
+    color: #7A0000;
+    font-size: 18px;
+    margin: 0;
+}
+
+.modal-corpo p {
+    /* Define margens verticais de 8px para os parágrafos dentro do modal */
+    margin: 8px 0;
+    font-size: 14px;
+    /* Define a cor do texto corporativo para cinza escuro (#333) */
+    color: #333;
+}
+
+.modal-divisor {
+    /* Remove a borda padrão do elemento <hr> */
+    border: none;
+    /* Cria uma linha divisória sutil na cor cinza claro (#eee) */
+    border-top: 1px solid #eee;
+    /* Define margens verticais de 12px para o separador */
+    margin: 12px 0;
+}
+
+/* --- Estilização dos Botões do Rodapé do Modal --- */
+.modal-rodape {
+    /* Utiliza flexbox para alinhar os botões de ação na parte inferior do modal */
+    display: flex;
+    /* Alinha os botões para o canto direito (fim do container) */
+    justify-content: flex-end;
+    /* Define um espaço de 10px entre os botões de ação */
+    gap: 10px;
+    /* Adiciona margem superior de 20px para distanciar do conteúdo acima */
+    margin-top: 20px;
+    /* Adiciona uma linha divisória superior para isolar o rodapé */
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.btn-rejeitar {
+    /* Define um fundo vermelho/coral (#d9534f) indicativo de rejeição ou exclusão */
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    /* Aplica espaçamento interno (8px vertical e 16px horizontal) */
+    padding: 8px 16px;
+    /* Arredonda as pontas em 5px */
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-rejeitar:hover {
+    /* Escurece o tom de vermelho ao passar o cursor sobre o botão */
+    background-color: #c9302c;
+}
+
+/* --- Botão Aprovar com Tom Verde Profissional --- */
+.btn-aprovar-modal {
+    /* Define um fundo verde corporativo (#28a745) indicativo de aprovação */
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-aprovar-modal:hover {
+    /* Transiciona para um tom de verde mais escuro ao passar o cursor */
+    background-color: #218838;
+}
+
+/* --- Botão "Ver Detalhes" na Tabela --- */
+.tabela-gestao .btn-profissional {
+    /* Define um fundo cinza muito claro para o botão de detalhes na tabela */
+    background-color: #f8f9fa;
+    /* Define a cor do texto e ícone para o vermelho corporativo (#7A0000) */
+    color: #7A0000;
+    /* Adiciona uma borda fina na mesma cor vermelha */
+    border: 1px solid #7A0000;
+    /* Aplica espaçamento interno compacto (6px vertical e 12px horizontal) */
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    /* Aplica transição suave para todas as propriedades em alterações de estado */
+    transition: all 0.2s ease;
+}
+
+.tabela-gestao .btn-profissional:hover {
+    /* Inverte as cores ao passar o cursor: fundo vermelho institucional e texto branco */
+    background-color: #7A0000;
+    color: white;
+}
+
+/* --- Melhorias Estéticas para a Tabela do Banco de Talentos --- */
+.secao-banco-talentos-rh .tabela-gestao {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.secao-banco-talentos-rh .tabela-gestao th {
+    background-color: #f8f9fa;
+    color: #333;
+    /* Aplica espaçamento interno diferenciado nas células de cabeçalho */
+    padding: 12px 15px;
+    text-align: left;
+    /* Adiciona uma linha inferior mais grossa (2px) para destacar o cabeçalho */
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+}
+
+.secao-banco-talentos-rh .tabela-gestao td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    /* Define a cor do texto para um cinza escuro legível (#444) */
+    color: #444;
+}
+
+/* Efeito suave ao passar o cursor nas linhas da tabela do banco de talentos */
+.secao-banco-talentos-rh .tabela-gestao tbody tr:hover {
+    /* Aplica um tom rosado/avermelhado bem suave (#fdf8f8) ao passar o cursor sobre a linha */
+    background-color: #fdf8f8;
+}
+
+/* Transformar o link "Ver PDF" num botão elegante */
+.secao-banco-talentos-rh .tabela-gestao td a {
+    /* Define um fundo cinza claro para simular um botão de visualização */
+    background-color: #f1f1f1;
+    color: #7A0000;
+    /* Aplica espaçamento interno compacto (5px vertical e 10px horizontal) */
+    padding: 5px 10px;
+    border-radius: 4px;
+    /* Remove o sublinhado padrão do link */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.secao-banco-talentos-rh .tabela-gestao td a:hover {
+    /* Inverte o estilo para vermelho institucional ao passar o cursor no link do PDF */
+    background-color: #7A0000;
+    color: white;
+}
