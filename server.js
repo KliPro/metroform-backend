@@ -370,8 +370,14 @@ app.post('/api/login-rh', (req, res) => {
     });
 });
 
-// Diz ao Express para servir todos os ficheiros estáticos da raiz do projeto
+// --- CONFIGURAÇÃO DO FRONTEND ESTÁTICO ---
+// Diz ao Express para servir todos os ficheiros estáticos da raiz
 app.use(express.static(__dirname));
+
+// Rota explícita para abrir o index.html na raiz (evita o "Cannot GET /")
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Inicia o servidor HTTP por último
 const PORT = process.env.PORT || 3000;
