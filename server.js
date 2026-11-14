@@ -367,6 +367,8 @@ app.post('/api/login-rh', (req, res) => {
 });
 
 // Inicia o servidor HTTP na porta 3000 e exibe uma mensagem de confirmação no terminal
-app.listen(3000, () => {
-    console.log('🚀 Servidor a correr na porta 3000 (http://localhost:3000)');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor a correr na porta ${PORT}`);
 });
