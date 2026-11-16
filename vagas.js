@@ -1,131 +1,190 @@
 // ==========================================
+// FUNÇÃO TOAST INTERNA DA PÁGINA DE VAGAS (Autónoma)
+// ==========================================
+function mostrarToast(mensagem, tipo = 'erro') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    } else {
+        container.innerHTML = ''; 
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${tipo}`;
+    toast.innerText = mensagem;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Variável global para armazenar todas as vagas vindas da API e permitir filtrar sem recarregar
+let todasAsVagasPagina = [];
+
+// ==========================================
 // FUNÇÃO PARA CARREGAR VAGAS DO BANCO DE DADOS
 // ==========================================
-// Função responsável por buscar as vagas diretamente da API do servidor MySQL e aplicar o filtro de busca via URL
 async function carregarVagasDoBanco() {
     try {
-        // Faz uma requisição HTTP GET assíncrona para a rota de vagas no servidor Node.js
         const resposta = await fetch('/api/vagas');
-        // Converte a resposta recebida para o formato JSON (lista de vagas)
-        let vagas = await resposta.json();
+        todasAsVagasPagina = await resposta.json();
 
-        // Seleciona o elemento HTML onde os cartões de vagas serão injetados
-        const gridVagas = document.querySelector('.grid-vagas-completa');
-        if (!gridVagas) return; // Se o elemento não existir na página, interrompe a execução
-
-        // 1. Captura o termo de busca enviado pela URL (ex: ?busca=tecnico) para filtrar resultados
+        // Aplica o filtro inicial considerando a URL (se houver parâmetro ?busca=...)
         const urlParams = new URLSearchParams(window.location.search);
-        const termoBusca = urlParams.get('busca') ? urlParams.get('busca').toLowerCase().trim() : '';
+        const termoBuscaUrl = urlParams.get('busca') ? urlParams.get('busca').toLowerCase().trim() : '';
 
-        // 2. Se houver um termo de pesquisa na URL, filtra a lista de vagas recebida do banco
-        if (termoBusca) {
-            vagas = vagas.filter(vaga => 
-                vaga.titulo.toLowerCase().includes(termoBusca) || 
-                vaga.setor.toLowerCase().includes(termoBusca) || 
-                (vaga.requisitos && vaga.requisitos.toLowerCase().includes(termoBusca)) ||
-                (vaga.localizacao && vaga.localizacao.toLowerCase().includes(termoBusca))
-            );
+        if (termoBuscaUrl) {
+            const inputBusca = document.getElementById('filtro-busca');
+            if (inputBusca) inputBusca.value = termoBuscaUrl;
         }
 
-        // Limpa o conteúdo atual do grid antes de preencher com os dados atualizados
-        gridVagas.innerHTML = '';
-
-        // Se após o filtro nenhuma vaga for encontrada, exibe uma mensagem informativa ao utilizador
-        if (vagas.length === 0) {
-            gridVagas.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #666; font-size: 16px; padding: 20px;">Não foram encontradas vagas para "${termoBusca}".</p>`;
-            return;
-        }
-
-        // Cria os cartões dinamicamente em loop para cada vaga filtrada do MySQL
-        vagas.forEach(vaga => {
-            const card = document.createElement('div');
-            card.className = 'card-vaga';
-
-            // Injeta a estrutura HTML do cartão com os dados reais da vaga (sem o botão Ver Match e com o botão centralizado)
-            card.innerHTML = `
-                <h3 class="vaga-titulo">${vaga.titulo}</h3>
-                <span class="setor">Setor: ${vaga.setor}</span>
-                <p class="local">📍 ${vaga.localizacao || "Guarulhos / SP"}</p>
-                <p class="requisitos"><strong>Requisitos:</strong> ${vaga.requisitos || ""}</p>
-                <div class="vaga-acoes">
-                     <button type="button" class="btn-candidatar" onclick="candidatarVaga(${vaga.id_vaga})">Candidatar-se</button>
-                </div>
-            `;
-            // Adiciona o cartão gerado dentro do container principal (grid)
-            gridVagas.appendChild(card);
-        });
+        filtrarVagasPagina();
 
     } catch (erro) {
-        // Captura e exibe eventuais erros de conexão com o servidor na consola
         console.error('Erro ao carregar as vagas do servidor:', erro);
     }
 }
 
-// Executa a função de carregamento assim que a estrutura da página HTML é totalmente carregada
-document.addEventListener('DOMContentLoaded', carregarVagasDoBanco);
+// ==========================================
+// FUNÇÃO PARA RENDERIZAR OS CARDS NA TELA
+// ==========================================
+function renderizarGridVagas(vagas, termoExibicao = '') {
+    const gridVagas = document.querySelector('.grid-vagas-completa');
+    if (!gridVagas) return;
+
+    gridVagas.innerHTML = '';
+
+    if (vagas.length === 0) {
+        gridVagas.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #666; font-size: 16px; padding: 20px;">Não foram encontradas vagas para os critérios selecionados.</p>`;
+        return;
+    }
+
+    vagas.forEach(vaga => {
+        const idVagaReal = vaga.id_vaga || vaga.id;
+        const card = document.createElement('div');
+        card.className = 'card-vaga';
+
+        card.innerHTML = `
+            <h3 class="vaga-titulo">${vaga.titulo}</h3>
+            <span class="setor">Setor: ${vaga.setor}</span>
+            <p class="local">📍 ${vaga.localizacao || "Guarulhos / SP"}</p>
+            <p class="requisitos"><strong>Requisitos:</strong> ${vaga.requisitos || ""}</p>
+            <div class="vaga-acoes">
+                 <button type="button" class="btn-candidatar" onclick="candidatarVaga(${idVagaReal})">Candidatar-se</button>
+            </div>
+        `;
+        gridVagas.appendChild(card);
+    });
+}
+
+// ==========================================
+// FUNÇÃO DE FILTRAGEM DINÂMICA (PESQUISA + SETOR)
+// ==========================================
+function filtrarVagasPagina() {
+    const termoBusca = document.getElementById('filtro-busca')?.value.toLowerCase().trim() || '';
+    const setorSelecionado = document.getElementById('filtro-setor')?.value.toLowerCase().trim() || '';
+
+    const vagasFiltradas = todasAsVagasPagina.filter(vaga => {
+        // Verifica se o texto digitado bate com título, setor, requisitos ou localização
+        const textoMatch = 
+            (vaga.titulo && vaga.titulo.toLowerCase().includes(termoBusca)) || 
+            (vaga.setor && vaga.setor.toLowerCase().includes(termoBusca)) || 
+            (vaga.requisitos && vaga.requisitos.toLowerCase().includes(termoBusca)) ||
+            (vaga.localizacao && vaga.localizacao.toLowerCase().includes(termoBusca));
+
+        // Verifica se o setor bate com o dropdown (se estiver vazio, passa todos)
+        const setorVaga = (vaga.setor || '').toLowerCase();
+        const setorMatch = !setorSelecionado || setorVaga.includes(setorSelecionado);
+
+        return textoMatch && setorMatch;
+    });
+
+    renderizarGridVagas(vagasFiltradas, termoBusca);
+}
+
+// ==========================================
+// INICIALIZAÇÃO E EVENTOS
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    carregarVagasDoBanco();
+
+    // Adiciona os ouvintes de eventos para filtrar em tempo real conforme o utilizador digita ou seleciona o setor
+    const inputBusca = document.getElementById('filtro-busca');
+    const selectSetor = document.getElementById('filtro-setor');
+
+    if (inputBusca) {
+        inputBusca.addEventListener('input', filtrarVagasPagina);
+    }
+
+    if (selectSetor) {
+        selectSetor.addEventListener('change', filtrarVagasPagina);
+    }
+});
 
 
 // ==========================================
-// FUNÇÃO DE CANDIDATURA À VAGA
+// FUNÇÃO DE CANDIDATURA À VAGA (Com Toast)
 // ==========================================
-// Função responsável por validar o login do utilizador e enviar a candidatura para o backend
 async function candidatarVaga(idVaga) {
-    // Recupera os dados do candidato armazenados no navegador (LocalStorage)
     const candidatoStr = localStorage.getItem('candidatoLogado');
 
-    // Se o candidato não estiver logado, exibe um alerta e redireciona para a página de login/início
     if (!candidatoStr) {
-        alert('Você precisa estar logado para se candidatar a uma vaga.');
-        window.location.href = 'index.html';
+        mostrarToast('Você precisa estar logado para se candidatar a uma vaga.', 'erro');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
         return;
     }
 
     let candidato;
     try {
-        // Tenta converter a string guardada no LocalStorage para um objeto JavaScript
         candidato = JSON.parse(candidatoStr);
     } catch (e) {
-        // Se houver corrupção nos dados, limpa o registo e obriga novo login
-        alert('Erro nos dados do utilizador. Faça login novamente.');
+        mostrarToast('Erro nos dados do utilizador. Faça login novamente.', 'erro');
         localStorage.removeItem('candidatoLogado');
-        window.location.href = 'index.html';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
         return;
     }
 
-    // Procura por qualquer variação possível do ID no objeto guardado para garantir compatibilidade
     const idCandidatoReal = candidato.id_candidato || candidato.id || candidato.usuario_id;
 
-    // Se o ID não for encontrado, força o reenvio para a tela de autenticação
     if (!idCandidatoReal) {
-        alert('ID do candidato não encontrado. Por favor, faça login novamente na sua conta.');
+        mostrarToast('ID do candidato não encontrado. Faça login novamente.', 'erro');
         localStorage.removeItem('candidatoLogado');
-        window.location.href = 'index.html';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
         return;
     }
 
     try {
-        // Envia uma requisição HTTP POST para registrar a candidatura no servidor
         const resposta = await fetch('/api/candidaturas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                id_candidato: Number(idCandidatoReal), // Garante que o ID do candidato é enviado como número
-                id_vaga: Number(idVaga)              // Garante que o ID da vaga é enviado como número
+                id_candidato: Number(idCandidatoReal),
+                id_vaga: Number(idVaga)
             })
         });
 
         const resultado = await resposta.json();
 
-        // Se a candidatura for bem-sucedida, avisa o utilizador e redireciona para o perfil
         if (resposta.ok) {
-            alert(resultado.mensagem);
-            window.location.href = 'perfil.html';
+            mostrarToast(resultado.mensagem || 'Candidatura efetuada com sucesso!', 'sucesso');
+            setTimeout(() => {
+                window.location.href = 'perfil.html';
+            }, 1500);
         } else {
-            // Caso contrário, exibe a mensagem de erro retornada pela API (ex: candidatura duplicada)
-            alert(resultado.erro || 'Erro ao efetuar a candidatura.');
+            mostrarToast(resultado.erro || 'Erro ao efetuar a candidatura.', 'erro');
         }
     } catch (erro) {
         console.error('Erro de conexão:', erro);
-        alert('Não foi possível conectar ao servidor.');
+        mostrarToast('Não foi possível conectar ao servidor.', 'erro');
     }
 }

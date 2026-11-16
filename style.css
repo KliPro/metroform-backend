@@ -715,3 +715,74 @@ html {
         transform: translateY(-10px);
     }
 }
+
+/* ========================================== */
+/* ESTILIZAÇÃO DO RODAPÉ (COM REDES SOCIAIS)  */
+/* ========================================== */
+.rodape-metroform {
+    background-color: #2b2b2b; /* Fundo cinza escuro profissional */
+    color: #ffffff;
+    padding: 25px 5%;
+    box-sizing: border-box;
+}
+
+.conteudo-rodape {
+    display: flex;
+    justify-content: space-between; /* Distribui os itens: esquerda, centro e direita */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.rodape-textos {
+    text-align: center;
+    flex: 1;
+}
+
+.rodape-textos p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #cccccc;
+}
+
+.rodape-sociais-esquerda,
+.rodape-sociais-direita {
+    display: flex;
+    gap: 15px; /* Espaço entre os ícones */
+}
+
+.rodape-sociais-esquerda a,
+.rodape-sociais-direita a {
+    color: #ffffff;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.08); /* Fundo subtil circular */
+    width: 38px;
+    height: 38px;
+    border-radius: 50%; /* Deixa os ícones em formato circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.rodape-sociais-esquerda a:hover,
+.rodape-sociais-direita a:hover {
+    background-color: #8B0000; /* Vermelho institucional da Metroform ao passar o rato */
+    color: #ffffff;
+    transform: translateY(-2px); /* Pequeno efeito de elevação */
+}
+
+/* Responsividade para ecrãs menores (telemóveis) */
+@media (max-width: 768px) {
+    .conteudo-rodape {
+        flex-direction: column;
+        text-align: center;
+    }
+    .rodape-sociais-esquerda,
+    .rodape-sociais-direita {
+        justify-content: center;
+    }
+}

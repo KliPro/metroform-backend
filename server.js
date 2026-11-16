@@ -276,12 +276,11 @@ app.get('/api/banco-talentos', (req, res) => {
     });
 });
 
-// Rota POST para adicionar ou atualizar currículo no banco de talentos (com upload de ficheiro PDF único)
+// Rota POST para adicionar currículo no banco de talentos (Apenas 1 envio por perfil)
 app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
     const { nome, email, telefone, resumo, curriculo_pdf_existente } = req.body;
     const nomeFinal = nome || 'Candidato Metroform';
     const emailFinal = email || 'candidato@exemplo.com';
-    // Define o nome do ficheiro PDF considerando o upload novo ou mantendo o existente
     const curriculoPdf = req.file ? req.file.filename : (curriculo_pdf_existente || 'curriculo_via_perfil.pdf');
 
     // Verifica se já existe um registo com este e-mail no banco de talentos
@@ -291,21 +290,17 @@ app.post('/api/banco-talentos', upload.single('curriculo'), (req, res) => {
             return res.status(500).json({ erro: 'Erro no servidor ao processar currículo.' });
         }
 
-        // Se já existir, atualiza os dados do talento existente
+        // Se já existir, BLOQUEIA o envio (impede múltiplos envios do mesmo candidato)
         if (rows.length > 0) {
-            const queryUpdate = `UPDATE banco_talentos SET nome = ?, telefone = ?, resumo = ?, curriculo_pdf = ?, data_envio = NOW() WHERE email = ?`;
-            db.query(queryUpdate, [nomeFinal, telefone || '', resumo || '', curriculoPdf, emailFinal], (errUp) => {
-                if (errUp) return res.status(500).json({ erro: 'Erro ao atualizar currículo.' });
-                return res.status(200).json({ mensagem: 'Currículo atualizado com sucesso no Banco de Talentos!' });
-            });
-        } else {
-            // Caso contrário, insere um novo registo no banco de talentos
-            const queryInsert = `INSERT INTO banco_talentos (nome, email, telefone, resumo, curriculo_pdf, data_envio) VALUES (?, ?, ?, ?, ?, NOW())`;
-            db.query(queryInsert, [nomeFinal, emailFinal, telefone || '', resumo || '', curriculoPdf], (errIns) => {
-                if (errIns) return res.status(500).json({ erro: 'Erro ao gravar currículo.' });
-                return res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
-            });
+            return res.status(400).json({ erro: 'Você já enviou o seu currículo para o Banco de Talentos anteriormente.' });
         }
+
+        // Caso contrário, insere o registo pela primeira vez
+        const queryInsert = `INSERT INTO banco_talentos (nome, email, telefone, resumo, curriculo_pdf, data_envio) VALUES (?, ?, ?, ?, ?, NOW())`;
+        db.query(queryInsert, [nomeFinal, emailFinal, telefone || '', resumo || '', curriculoPdf], (errIns) => {
+            if (errIns) return res.status(500).json({ erro: 'Erro ao gravar currículo.' });
+            return res.status(201).json({ mensagem: 'Currículo enviado com sucesso para o Banco Geral de Talentos!' });
+        });
     });
 });
 
@@ -344,18 +339,27 @@ app.post('/api/candidaturas', (req, res) => {
         return res.status(400).json({ erro: 'Dados insuficientes para efetuar a candidatura.' });
     }
 
-    // Insere a candidatura definindo a data atual (NOW()) e o status inicial como 'Em Análise'
-    const query = `INSERT INTO candidatura (id_candidato, id_vaga, data_candidatura, status_candidatura) VALUES (?, ?, NOW(), 'Em Análise')`;
-
-    db.query(query, [id_candidato, id_vaga], (err) => {
-        if (err) {
-            // Trata o erro de duplicado caso o candidato já se tenha candidatado à mesma vaga
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ erro: 'Você já se candidatou a esta vaga anteriormente.' });
-            }
-            return res.status(500).json({ erro: 'Erro ao efetuar candidatura: ' + err.message });
+    // 1. Primeiro verifica se o candidato já se candidatou a esta vaga
+    db.query('SELECT * FROM candidatura WHERE id_candidato = ? AND id_vaga = ?', [id_candidato, id_vaga], (errCheck, resultados) => {
+        if (errCheck) {
+            console.error('Erro ao verificar candidatura existente:', errCheck);
+            return res.status(500).json({ erro: 'Erro interno ao verificar candidatura.' });
         }
-        res.status(201).json({ mensagem: 'Candidatura efetuada com sucesso!' });
+
+        // Se já existir um registo, bloqueia e avisa o utilizador
+        if (resultados.length > 0) {
+            return res.status(400).json({ erro: 'Você já se candidatou a esta vaga anteriormente.' });
+        }
+
+        // 2. Se não existir, prossegue com a inserção normal
+        const query = `INSERT INTO candidatura (id_candidato, id_vaga, data_candidatura, status_candidatura) VALUES (?, ?, NOW(), 'Em Análise')`;
+
+        db.query(query, [id_candidato, id_vaga], (err) => {
+            if (err) {
+                return res.status(500).json({ erro: 'Erro ao efetuar candidatura: ' + err.message });
+            }
+            res.status(201).json({ mensagem: 'Candidatura efetuada com sucesso!' });
+        });
     });
 });
 
@@ -468,12 +472,24 @@ app.get('/api/candidaturas-rh', (req, res) => {
     });
 });
 
-// Rota PUT para atualizar o status de uma candidatura específica (ex: Aprovado, Reprovado)
+// Rota para atualizar o status ou excluir caso seja reprovado
 app.put('/api/candidaturas/:id/status', (req, res) => {
-    db.query('UPDATE candidatura SET status_candidatura = ? WHERE id_candidatura = ?', [req.body.status, req.params.id], (err) => {
-        if (err) return res.status(500).json({ erro: 'Erro ao atualizar status.' });
-        res.status(200).json({ mensagem: 'Status atualizado com sucesso!' });
-    });
+    const novoStatus = req.body.status;
+    const idCandidatura = req.params.id;
+
+    if (novoStatus === 'Reprovado') {
+        // Se for reprovado, exclui a candidatura do processo seletivo
+        db.query('DELETE FROM candidatura WHERE id_candidatura = ?', [idCandidatura], (err) => {
+            if (err) return res.status(500).json({ erro: 'Erro ao remover candidato do processo.' });
+            res.status(200).json({ mensagem: 'Candidato reprovado e removido do processo seletivo com sucesso!' });
+        });
+    } else {
+        // Para outros status (ex: Aprovado, Em Análise), apenas atualiza
+        db.query('UPDATE candidatura SET status_candidatura = ? WHERE id_candidatura = ?', [novoStatus, idCandidatura], (err) => {
+            if (err) return res.status(500).json({ erro: 'Erro ao atualizar status.' });
+            res.status(200).json({ mensagem: 'Status atualizado com sucesso!' });
+        });
+    }
 });
 
 // 10. Rota GET para Estatísticas do Painel do RH

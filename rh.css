@@ -93,6 +93,8 @@ body.pagina-rh {
 .rh-cabecalho-secao {
     /* Adiciona margem inferior de 30px para distanciar do conteúdo seguinte */
     margin-bottom: 30px;
+    /* Centraliza o título e o parágrafo horizontalmente */
+    text-align: center;
 }
 
 .rh-cabecalho-secao h2 {

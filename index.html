@@ -44,38 +44,23 @@
         </div> <!-- Fecha a div do conteúdo principal -->
     </section> <!-- Fecha a seção principal -->
 
-    <section id="vagas" class="secao-vagas"> <!-- Abre a seção de oportunidades de vagas -->
-        <div class="container-vagas"> <!-- Container de largura máxima para centralizar o conteúdo das vagas -->
-            <h2>Oportunidade em Destaque</h2> <!-- Título da seção de vagas -->
-            <p class="subtitulo-vagas">Encontre a vaga ideal alinhada ao seu perfil e competência</p> <!-- Subtítulo explicativo -->
+        <section id="vagas" class="secao-vagas">
+        <div class="container-vagas">
+            <h2>Oportunidade em Destaque</h2>
+            <p class="subtitulo-vagas">Encontre a vaga ideal alinhada ao seu perfil e competência</p>
 
-            <!-- CARD DE OPORTUNIDADE EM DESTAQUE ATUALIZADO (CONFORME O FIGMA) -->
-            <!-- CARD DE OPORTUNIDADE EM DESTAQUE ATUALIZADO (CONFORME O FIGMA) -->
-        <!-- CARD DE OPORTUNIDADE EM DESTAQUE ATUALIZADO -->
-        <div class="vaga-destaque-card">
-            <h3 class="vaga-titulo">Técnico de Manutenção</h3>
-            <p class="vaga-info"><strong>Setor:</strong> Industrial</p>
-            <p class="vaga-info">📍 Guarulhos / SP</p>
-            <p class="vaga-requisitos">
-                <strong>Requisitos:</strong> Experiência prévia em manutenção de equipamentos industriais e disponibilidade de horários.
-            </p>
-    
-        <div class="vaga-acoes">
-             <button type="button" class="btn-candidatar" onclick="candidatarVaga(9)">Candidatar-se</button>
-        </div>
-        </div>
-            <!-- FIM DO CARD DE DESTAQUE -->
-            
-            <div class="container-botoes-vagas"> <!-- Container do botão centralizado para ver todas as vagas -->
-                <a href="vagas.html" class="btn-todas-vagas">Ver Todas as Vagas</a> <!-- Link para a página completa de listagem de vagas -->
-            </div> <!-- Fecha o container do botão de vagas -->
+            <!-- Container onde o JavaScript vai injetar a vaga mais recente -->
+            <div class="grid-vagas"></div>
+
+            <div class="container-botoes-vagas">
+                <a href="vagas.html" class="btn-todas-vagas">Ver Todas as Vagas</a>
+            </div>
 
             <div class="centro-banco-talentos"> 
                 <a href="javascript:void(0);" onclick="abrirModalBancoTalentos()" class="link-banco">📄 Enviar currículo para o Banco Geral de Talentos</a> 
-            </div> <!-- Fecha o container do banco de talentos -->
-
-        </div> <!-- Fecha o container de vagas -->
-    </section> <!-- Fecha a seção de vagas -->
+            </div>
+        </div>
+    </section>
 
     <section id="cultura" class="secao-cultura"> <!-- Abre a seção de cultura e valores da empresa -->
         <div class="container-cultura"> <!-- Container principal da seção de cultura -->
@@ -211,72 +196,59 @@
 
             <div class="modal-header"> <!-- Cabeçalho do modal de recuperação -->
                 <h2>Redefinir Senha</h2> <!-- Título do modal -->
-                <p>Insira o seu e-mail cadastrado e defina uma nova senha.</p> <!-- Descrição instrutiva -->
+                <p>Insira o seu e-mail cadastrado e defina a sua nova senha.</p> <!-- Descrição instrutiva -->
             </div> <!-- Fecha o cabeçalho -->
 
             <form id="form-modal-recuperar"> <!-- Formulário de redefinição de senha -->
-                <div class="grupo-input"> <!-- Grupo de input para o e-mail de recuperação -->
+                
+                <div class="grupo-input" style="margin-bottom: 15px;"> <!-- Grupo de input para o e-mail de recuperação -->
                     <label>E-mail:</label> <!-- Rótulo do campo -->
-                    <input type="email" id="email-recuperar" required> <!-- Campo de e-mail obrigatório -->
-                </div> 
+                    <input type="email" id="email-recuperar" required placeholder="seu@email.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"> <!-- Campo de e-mail obrigatório -->
+                </div>
+
+                <div class="grupo-input" style="margin-bottom: 20px;"> <!-- NOVO: Grupo de input para a nova senha -->
+                    <label>Nova Senha:</label>
+                    <input type="password" id="nova-senha-recuperar" required placeholder="Digite a nova senha" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;"> <!-- Container flexível para alinhar os botões lado a lado -->
-                    <button type="button" onclick="fecharModalRecuperar()" style="flex: 1; padding: 10px; background: #666; border: none; color: white; border-radius: 4px; font-weight: bold; cursor: pointer;">Cancelar</button> <!-- Botão para cancelar e fechar -->
-                    <button type="submit" style="flex: 1; padding: 10px; background: var(--metroform-red); border: none; color: white; border-radius: 4px; font-weight: bold; cursor: pointer;">Atualizar</button> <!-- Botão para enviar a nova senha -->
-                </div> 
+                    <button type="button" onclick="fecharModalRecuperar()" style="flex: 1; padding: 10px; background: #666; border: none; color: white; border-radius: 4px; font-weight: bold; cursor: pointer;">Cancelar</button>
+                    <button type="submit" style="flex: 1; padding: 10px; background: var(--metroform-red); border: none; color: white; border-radius: 4px; font-weight: bold; cursor: pointer;">Atualizar</button>
+                </div>
             </form> <!-- Fecha o formulário de recuperação -->
         </div> <!-- Fecha a caixa do modal -->
     </div> <!-- Fecha a sobreposição do modal de recuperação -->
 
-    <footer class="rodape-metroform"> <!-- Abre o rodapé padrão institucional do site -->
-        <div class="conteudo-rodape"> <!-- Container interno para centralizar o texto do rodapé -->
-            <p>&copy; 2026 Metroform - Soluções para Construção. Todos os direitos reservados.</p> <!-- Aviso de direitos autorais e ano atual -->
-            <p class="texto-projeto">Desenvolvido como projeto acadêmico de recrutamento e seleção inteligente.</p> <!-- Nota de rodapé identificando o caráter acadêmico -->
-        </div> <!-- Fecha o container do rodapé -->
-    </footer> <!-- Fecha o rodapé -->
+    <footer class="rodape-metroform">
+    <div class="conteudo-rodape">
+        <!-- Ícones do lado esquerdo (YouTube e LinkedIn) -->
+        <div class="rodape-sociais-esquerda">
+            <a href="https://www.youtube.com/channel/UCukOimGxPhmoBYyu17dK8Qw" target="_blank" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.linkedin.com/company/metroform-system" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+        
+        <!-- Textos centrais -->
+        <div class="rodape-textos">
+            <p>&copy;2026 Metroform. Todos os direitos reservados.</p>
+            <p class="texto-projeto">Inovação e eficiência em processos seletivos.</p>
+        </div>
+        
+        <!-- Ícones do lado direito (Instagram e Facebook) -->
+        <div class="rodape-sociais-direita">
+            <a href="https://www.instagram.com/metroform_protecoes/" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/metroformprotecao/" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        </div>
+    </div>
+</footer>
 
     <script src="script.js"></script> <!-- Conecta o arquivo de script externo em JavaScript no final do corpo para controle interativo e requisições -->
     
-    <!-- ========================================== -->
+   <!-- ========================================== -->
     <!-- MODAL DO BANCO GERAL DE TALENTOS (HOME)    -->
     <!-- ========================================== -->
-    <div id="modal-banco-talentos" class="modal-overlay">
+    <div id="modal-banco-talentos" class="modal-overlay oculto" style="z-index: 3500;">
         <div class="modal-box">
-            <button type="button" onclick="fecharModalBancoTalentos()" class="modal-close">&times;</button>
-            
-            <div class="modal-header">
-                <h2>Banco Geral de Talentos</h2>
-                <p>Envie o seu currículo espontaneamente para a nossa base.</p>
-            </div>
-
-            <form id="form-banco-talentos">
-                <div class="grupo-input">
-                    <label>Nome Completo:</label>
-                    <input type="text" id="talento-nome" required>
-                </div>
-
-                <div class="grupo-input">
-                    <label>E-mail:</label>
-                    <input type="email" id="talento-email" required>
-                </div>
-
-                <div class="grupo-input">
-                    <label>Telefone:</label>
-                    <input type="text" id="talento-telefone">
-                </div>
-
-                <div class="grupo-input">
-                    <label>Resumo Profissional:</label>
-                    <textarea id="talento-resumo" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; outline: none;"></textarea>
-                </div>
-
-                <div class="grupo-input">
-                    <label>Currículo (PDF):</label>
-                    <input type="file" id="talento-curriculo" accept=".pdf" required>
-                </div>
-
-                <button type="submit" class="btn-submit-auth">Enviar Currículo</button>
-            </form>
+            <!-- O conteúdo deste modal é gerado dinamicamente pelo JavaScript para utilizadores logados -->
         </div>
     </div>
 
