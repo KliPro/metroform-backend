@@ -8,6 +8,7 @@ const cors = require('cors');
 const multer = require('multer');
 // Importa o módulo nativo path para o tratamento e normalização de caminhos de diretórios e ficheiros
 const path = require('path');
+const fs = require('fs');
 
 // Inicializa a aplicação Express e atribui à constante app
 const app = express();
@@ -33,28 +34,114 @@ const storage = multer.diskStorage({
 // Inicializa o middleware do multer com a configuração de armazenamento definida
 const upload = multer({ storage: storage });
 
-// Cria a conexão com a base de dados MySQL (suportando variáveis de ambiente para a nuvem ou valores locais do XAMPP)
-const db = mysql.createConnection({
+// Upload do perfil fica em memória até a validação passar.
+// Assim uma foto inválida não é gravada em ./uploads.
+const uploadPerfil = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }
+});
+
+const LIMITE_TELEFONE = 11;
+const LIMITE_FORMACAO = 120;
+const LIMITE_CIDADE = 80;
+const LIMITE_RESUMO = 350;
+const LIMITE_FOTO_BYTES = 2 * 1024 * 1024;
+const EXTENSOES_FOTO = new Set(['.jpg', '.jpeg', '.png']);
+const MIME_FOTO = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png'
+};
+
+function mensagemErroPerfil(body, files) {
+    const telefone = String(body.telefone || '').trim();
+    const formacao = String(body.formacao || '').trim();
+    const cidade = String(body.cidade || '').trim();
+    const estado = String(body.estado || '').trim();
+    const resumo = String(body.resumo || '').trim();
+
+    if (telefone && !/^\d+$/.test(telefone)) {
+        return 'O telefone deve conter apenas números.';
+    }
+    if (telefone.length > LIMITE_TELEFONE) {
+        return 'O telefone deve ter no máximo 11 números.';
+    }
+    if (formacao.length > LIMITE_FORMACAO) {
+        return `A formação deve ter no máximo ${LIMITE_FORMACAO} caracteres.`;
+    }
+    if (cidade.length > LIMITE_CIDADE) {
+        return `A cidade deve ter no máximo ${LIMITE_CIDADE} caracteres.`;
+    }
+    if (cidade || estado) {
+        if (!cidade) {
+            return 'Informe a cidade junto com a UF.';
+        }
+        if (!/^[A-Za-z]{2}$/.test(estado)) {
+            return 'O estado deve ter exatamente 2 letras (UF).';
+        }
+    }
+    if (resumo.length > LIMITE_RESUMO) {
+        return `O resumo deve ter no máximo ${LIMITE_RESUMO} caracteres.`;
+    }
+
+    const foto = files && files.foto ? files.foto[0] : null;
+    if (foto) {
+        const extensao = path.extname(foto.originalname || '').toLowerCase();
+        if (!EXTENSOES_FOTO.has(extensao)) {
+            return 'A foto de perfil deve ser .jpg, .jpeg ou .png.';
+        }
+        if (foto.mimetype && foto.mimetype !== MIME_FOTO[extensao]) {
+            return 'A foto de perfil deve ser .jpg, .jpeg ou .png.';
+        }
+        if (foto.size > LIMITE_FOTO_BYTES) {
+            return 'A foto de perfil deve ter no máximo 2MB.';
+        }
+    }
+
+    return null;
+}
+
+function gravarFicheiroValidado(file, prefixo) {
+    const pasta = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(pasta)) {
+        fs.mkdirSync(pasta, { recursive: true });
+    }
+    const extensao = path.extname(file.originalname || '').toLowerCase();
+    const nome = `${prefixo}-${Date.now()}${extensao}`;
+    fs.writeFileSync(path.join(pasta, nome), file.buffer);
+    return nome;
+}
+
+// ==========================================
+// CONFIGURAÇÃO DO CONNECTION POOL (MYSQL)
+// ==========================================
+// Em vez de mysql.createConnection, usamos createPool para gerir e reutilizar conexões automaticamente,
+// evitando erros de "Connection closed" causados por inatividade ou timeout na nuvem (Aiven)
+const db = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'metroform_db',
-    port: process.env.DB_PORT || 3306,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+    // Ativa o SSL automaticamente quando estiver a usar a Aiven na nuvem
+    ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : null,
+    // Parâmetros de otimização e estabilidade do Connection Pool
+    waitForConnections: true, // Aguarda na fila se todas as conexões do pool estiverem ocupadas
+    connectionLimit: 10,      // Número máximo de conexões simultâneas permitidas no pool
+    queueLimit: 0             // Sem limite máximo para a fila de pedidos pendentes
 });
 
-// Estabelece a conexão efetiva com a base de dados MySQL
-db.connect((err) => {
+// Testa o pool de conexões ao iniciar o servidor para garantir que a comunicação está pronta
+db.getConnection((err, connection) => {
     // Verifica se ocorreu algum erro crítico ao tentar ligar à base de dados
     if (err) {
         console.error('❌ Erro ao conectar ao banco de dados MySQL:', err.message);
         console.error('Código do erro:', err.code);
         return; // Interrompe a execução caso a ligação falhe
     }
-    // Confirma no terminal que a ligação foi bem-sucedida
+    // Confirma no terminal que a ligação foi bem-sucedida e liberta a conexão de teste de volta para o pool
     console.log('✅ Conectado ao banco de dados MySQL com sucesso!');
+    connection.release();
 });
 
 // 1. Rota POST para o Cadastro de Candidato
@@ -64,7 +151,7 @@ app.post('/api/candidatos', (req, res) => {
     // Define a query SQL parametrizada para inserir um novo registo na tabela candidato
     const query = 'INSERT INTO candidato (nome, email, senha) VALUES (?, ?, ?)';
 
-    // Executa a query de inserção na base de dados com os parâmetros fornecidos
+    // Executa a query de inserção na base de dados com os parâmetros fornecidos usando o pool
     db.query(query, [nome, email, senha], (err, resultado) => {
         if (err) {
             console.error('Erro ao inserir candidato:', err);
@@ -112,6 +199,17 @@ app.post('/api/login', (req, res) => {
             // Se nenhum registo corresponder, retorna status HTTP 401 (Não autorizado)
             res.status(401).json({ erro: 'E-mail ou senha incorretos.' });
         }
+    });
+});
+
+// Devolve o perfil gravado no MySQL (foto e currículo inclusos) sem a senha
+app.get('/api/candidatos/:id', (req, res) => {
+    const query = `SELECT id_candidato, nome, email, telefone, resumo, formacao, cidade, foto_perfil, curriculo_pdf
+                    FROM candidato WHERE id_candidato = ?`;
+    db.query(query, [req.params.id], (err, resultados) => {
+        if (err) return res.status(500).json({ erro: 'Erro ao carregar perfil.' });
+        if (!resultados.length) return res.status(404).json({ erro: 'Candidato não encontrado.' });
+        res.status(200).json(resultados[0]);
     });
 });
 
@@ -262,36 +360,91 @@ app.post('/api/candidaturas', (req, res) => {
 });
 
 // 8. Rota PUT para Atualizar Perfil do Candidato (com suporte a upload opcional de foto e currículo)
-app.put('/api/candidatos/:id', upload.fields([
-    { name: 'foto', maxCount: 1 },
-    { name: 'curriculo', maxCount: 1 }
-]), (req, res) => {
-    const idCandidato = req.params.id;
-    const { nome, telefone, resumo, formacao, cidade } = req.body;
+app.put('/api/candidatos/:id', (req, res) => {
+    uploadPerfil.fields([
+        { name: 'foto', maxCount: 1 },
+        { name: 'curriculo', maxCount: 1 }
+    ])(req, res, (errUpload) => {
+        if (errUpload) {
+            if (errUpload.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ erro: 'O arquivo enviado excede o tamanho permitido.' });
+            }
+            return res.status(400).json({ erro: 'Não foi possível processar o arquivo enviado.' });
+        }
 
-    // Extrai os nomes dos ficheiros carregados, caso existam na requisição
-    const foto = req.files && req.files['foto'] ? req.files['foto'][0].filename : null;
-    const curriculo = req.files && req.files['curriculo'] ? req.files['curriculo'][0].filename : null;
+        const erroValidacao = mensagemErroPerfil(req.body, req.files);
+        if (erroValidacao) {
+            return res.status(400).json({ erro: erroValidacao });
+        }
 
-    // Constrói dinamicamente a query de atualização SQL baseada nos campos enviados
-    let query = `UPDATE candidato SET nome = ?, telefone = ?, resumo = ?, formacao = ?, cidade = ?`;
-    let params = [nome || '', telefone || '', resumo || '', formacao || '', cidade || ''];
+        const idCandidato = req.params.id;
+        const nome = String(req.body.nome || '').trim();
+        const telefone = String(req.body.telefone || '').trim();
+        const resumo = String(req.body.resumo || '').trim();
+        const formacao = String(req.body.formacao || '').trim();
+        const cidade = String(req.body.cidade || '').trim();
+        const estado = String(req.body.estado || '').trim().toUpperCase();
+        const cidadeSalva = cidade ? `${cidade} - ${estado}` : '';
 
-    if (foto) {
-        query += `, foto_perfil = ?`;
-        params.push(foto);
-    }
-    if (curriculo) {
-        query += `, curriculo_pdf = ?`;
-        params.push(curriculo);
-    }
+        const fotoArquivo = req.files && req.files.foto ? req.files.foto[0] : null;
+        const curriculoArquivo = req.files && req.files.curriculo ? req.files.curriculo[0] : null;
+        const ficheirosGravados = [];
 
-    query += ` WHERE id_candidato = ?`;
-    params.push(idCandidato);
+        let foto = null;
+        let curriculo = null;
+        try {
+            if (fotoArquivo) {
+                foto = gravarFicheiroValidado(fotoArquivo, 'foto');
+                ficheirosGravados.push(foto);
+            }
+            if (curriculoArquivo) {
+                curriculo = gravarFicheiroValidado(curriculoArquivo, 'curriculo');
+                ficheirosGravados.push(curriculo);
+            }
+        } catch (erroGravacao) {
+            ficheirosGravados.forEach((nomeFicheiro) => {
+                fs.unlink(path.join(__dirname, 'uploads', nomeFicheiro), () => {});
+            });
+            return res.status(500).json({ erro: 'Erro ao guardar o arquivo enviado.' });
+        }
 
-    db.query(query, params, (err) => {
-        if (err) return res.status(500).json({ erro: 'Erro ao atualizar perfil: ' + err.message });
-        res.status(200).json({ mensagem: 'Perfil atualizado com sucesso!' });
+        let query = `UPDATE candidato SET nome = ?, telefone = ?, resumo = ?, formacao = ?, cidade = ?`;
+        const params = [nome, telefone, resumo, formacao, cidadeSalva];
+
+        if (foto) {
+            query += `, foto_perfil = ?`;
+            params.push(foto);
+        }
+        if (curriculo) {
+            query += `, curriculo_pdf = ?`;
+            params.push(curriculo);
+        }
+
+        query += ` WHERE id_candidato = ?`;
+        params.push(idCandidato);
+
+        db.query(query, params, (err) => {
+            if (err) {
+                ficheirosGravados.forEach((nomeFicheiro) => {
+                    fs.unlink(path.join(__dirname, 'uploads', nomeFicheiro), () => {});
+                });
+                return res.status(500).json({ erro: 'Erro ao atualizar perfil: ' + err.message });
+            }
+
+            db.query(
+                'SELECT foto_perfil, curriculo_pdf, cidade FROM candidato WHERE id_candidato = ?',
+                [idCandidato],
+                (errSel, rows) => {
+                    const salvo = !errSel && rows && rows[0] ? rows[0] : {};
+                    res.status(200).json({
+                        mensagem: 'Perfil atualizado com sucesso!',
+                        cidade: salvo.cidade || cidadeSalva,
+                        foto_perfil: salvo.foto_perfil || null,
+                        curriculo_pdf: salvo.curriculo_pdf || null
+                    });
+                }
+            );
+        });
     });
 });
 

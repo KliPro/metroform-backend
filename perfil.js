@@ -13,80 +13,114 @@ if (!candidato || (!candidato.id && !candidato.id_candidato)) {
     // Armazena o ID real do candidato utilizando a propriedade disponível (id_candidato ou id)
     const idCandidatoReal = candidato.id_candidato || candidato.id;
 
-    // Preenche os dados básicos do utilizador no cabeçalho e perfil da página
-    document.getElementById('nome-exibir').textContent = candidato.nome || 'Utilizador';
-    document.getElementById('email-exibir').textContent = candidato.email || '-';
-    document.getElementById('telefone-exibir').textContent = candidato.telefone || 'Não informado';
-    
-    // Se houver um resumo profissional registado, exibe-o no respetivo elemento do DOM
-    if (candidato.resumo) {
-        document.getElementById('resumo-exibir').textContent = candidato.resumo;
+    exibirDadosPerfil(candidato);
+    sincronizarPerfilComServidor(idCandidatoReal);
+
+    // Se o ID real do candidato estiver disponível, chama a função para carregar as candidaturas na base de dados MySQL
+    if (idCandidatoReal) {
+        carregarCandidaturas(idCandidatoReal);
+    }
+}
+
+function escaparHtml(valor) {
+    return String(valor ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function arquivoSalvo(nome) {
+    const texto = String(nome || '').trim();
+    return Boolean(texto) && texto !== 'null' && texto !== 'undefined';
+}
+
+function urlUpload(nomeArquivo) {
+    return `/uploads/${encodeURIComponent(nomeArquivo)}`;
+}
+
+function iniciaisDoNome(nome) {
+    const partes = String(nome || 'Utilizador').trim().split(/\s+/).filter(Boolean);
+    if (partes.length > 1) {
+        return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+    }
+    return (partes[0] || 'U').substring(0, 2).toUpperCase();
+}
+
+function exibirDadosPerfil(dados) {
+    document.getElementById('nome-exibir').textContent = dados.nome || 'Utilizador';
+    document.getElementById('email-exibir').textContent = dados.email || '-';
+    document.getElementById('telefone-exibir').textContent = dados.telefone || 'Não informado';
+
+    const resumoEl = document.getElementById('resumo-exibir');
+    if (resumoEl) {
+        resumoEl.textContent = dados.resumo
+            ? dados.resumo
+            : 'Adicione um resumo sobre a sua experiência profissional...';
     }
 
-    // Seleciona o elemento de exibição da formação académica no DOM
     const formacaoExibir = document.getElementById('formacao-exibir');
     if (formacaoExibir) {
-        // Injeta o ícone e o texto da formação ou uma mensagem padrão se não estiver preenchida
-        formacaoExibir.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${candidato.formacao || 'Formação não informada'}`;
+        formacaoExibir.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${escaparHtml(dados.formacao || 'Formação não informada')}`;
     }
 
-    // Seleciona o elemento de exibição da cidade/morada no DOM
     const cidadeExibir = document.getElementById('cidade-exibir');
     if (cidadeExibir) {
-        // Injeta o ícone de localização e a cidade ou uma mensagem padrão
-        cidadeExibir.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${candidato.cidade || 'Endereço não informado'}`;
+        cidadeExibir.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${escaparHtml(dados.cidade || 'Endereço não informado')}`;
     }
 
-    // --- RENDERIZAÇÃO INTELIGENTE DO AVATAR ---
-    // Seleciona o container wrapper onde a foto de perfil ou as iniciais serão exibidas
     const avatarWrapper = document.getElementById('avatar-container-wrapper');
     if (avatarWrapper) {
-        // Se o candidato tiver uma foto de perfil cadastrada na base de dados
-        if (candidato.foto_perfil) {
-            // Renderiza a imagem do avatar apontando para a pasta de uploads do servidor backend
-            avatarWrapper.innerHTML = `<img src="/uploads/${candidato.foto_perfil}" alt="Foto de Perfil" class="foto-perfil">`;
+        const desenharIniciais = () => {
+            avatarWrapper.innerHTML = `<div class="avatar-inicial-perfil">${escaparHtml(iniciaisDoNome(dados.nome))}</div>`;
+        };
+
+        if (arquivoSalvo(dados.foto_perfil)) {
+            const src = urlUpload(dados.foto_perfil);
+            avatarWrapper.innerHTML = `<img src="${escaparHtml(src)}" alt="Foto de Perfil" class="foto-perfil">`;
+            const img = avatarWrapper.querySelector('img');
+            if (img) img.addEventListener('error', desenharIniciais);
         } else {
-            // Caso não tenha foto, separa o nome em partes para gerar iniciais automáticas
-            const nomePartes = (candidato.nome || 'Utilizador').trim().split(' ');
-            // Se houver mais de uma palavra, pega a primeira letra do primeiro e último nome; senão, pega as duas primeiras letras
-            const iniciais = nomePartes.length > 1 
-                ? (nomePartes[0][0] + nomePartes[nomePartes.length - 1][0]).toUpperCase() 
-                : nomePartes[0].substring(0, 2).toUpperCase();
-            
-            // Renderiza um bloco estilizado com as iniciais geradas dinamicamente
-            avatarWrapper.innerHTML = `<div class="avatar-inicial-perfil">${iniciais}</div>`;
+            desenharIniciais();
         }
     }
 
-    // --- EXIBIÇÃO DINÂMICA DO CURRÍCULO PDF ---
-    // Seleciona o container de status do currículo na página de perfil
     const statusCurriculo = document.getElementById('status-curriculo');
     if (statusCurriculo) {
-        // Verifica se o candidato possui um ficheiro de currículo em PDF válido associado
-        if (candidato.curriculo_pdf && candidato.curriculo_pdf !== 'null') {
-            // Injeta a estrutura HTML informando que o currículo foi enviado com sucesso e criando o botão de visualização
+        if (arquivoSalvo(dados.curriculo_pdf)) {
+            const href = urlUpload(dados.curriculo_pdf);
             statusCurriculo.innerHTML = `
                 <div class="curriculo-box-info">
                     <div>
                         <p style="margin: 0; color: #0ca678; font-weight: bold; font-size: 14px;">
                             <i class="fa-solid fa-check-circle"></i> Currículo enviado com sucesso
                         </p>
-                        <small style="color: #666; font-size: 12px;">${candidato.curriculo_pdf}</small>
+                        <small style="color: #666; font-size: 12px;">${escaparHtml(dados.curriculo_pdf)}</small>
                     </div>
-                    <a href="/uploads/${candidato.curriculo_pdf}" target="_blank" class="btn-ver-pdf-perfil">
+                    <a href="${escaparHtml(href)}" target="_blank" rel="noopener" class="btn-ver-pdf-perfil">
                         <i class="fa-solid fa-eye"></i> Ver PDF
                     </a>
                 </div>
             `;
         } else {
-            // Exibe mensagem informativa caso nenhum currículo tenha sido anexado ainda
             statusCurriculo.innerHTML = `<p style="color: #666; font-size: 14px;">Nenhum currículo em PDF enviado. Edite o perfil para enviar o seu arquivo.</p>`;
         }
     }
+}
 
-    // Se o ID real do candidato estiver disponível, chama a função para carregar as candidaturas na base de dados MySQL
-    if (idCandidatoReal) {
-        carregarCandidaturas(idCandidatoReal);
+async function sincronizarPerfilComServidor(idCandidato) {
+    try {
+        const resposta = await fetch(`/api/candidatos/${idCandidato}`);
+        if (!resposta.ok) return;
+        const dados = await resposta.json();
+        Object.assign(candidato, dados, {
+            id: dados.id_candidato || candidato.id,
+            id_candidato: dados.id_candidato || candidato.id_candidato
+        });
+        localStorage.setItem('candidatoLogado', JSON.stringify(candidato));
+        exibirDadosPerfil(candidato);
+    } catch (erro) {
+        console.error('Erro ao sincronizar perfil:', erro);
     }
 }
 
@@ -149,13 +183,34 @@ function logout() {
 }
 
 // Função para abrir o modal de edição de perfil e preenchê-lo com os dados atuais
+function separarCidadeEstado(valor) {
+    const texto = String(valor || '').trim();
+    const partes = texto.match(/^(.*)\s-\s([A-Za-z]{2})$/);
+    if (partes) {
+        return { cidade: partes[1].trim(), estado: partes[2].toUpperCase() };
+    }
+    return { cidade: texto, estado: '' };
+}
+
+function atualizarContadorResumo(textarea) {
+    const max = Number(textarea.getAttribute('maxlength')) || 350;
+    const restantes = max - textarea.value.length;
+    const contadorEl = document.getElementById('contador-resumo');
+    if (!contadorEl) return;
+    contadorEl.textContent = `${restantes} caracteres restantes`;
+    contadorEl.style.color = restantes < 30 ? '#d32f2f' : '#666';
+}
+
 function abrirModalEdicao() {
+    const local = separarCidadeEstado(candidato.cidade);
     // Preenche os campos do formulário de edição com os dados existentes no objeto candidato
     document.getElementById('edit-nome').value = candidato.nome || '';
-    document.getElementById('edit-telefone').value = candidato.telefone || '';
+    document.getElementById('edit-telefone').value = String(candidato.telefone || '').replace(/\D/g, '').slice(0, 11);
     document.getElementById('edit-resumo').value = candidato.resumo || '';
     document.getElementById('edit-formacao').value = candidato.formacao || '';
-    document.getElementById('edit-cidade').value = candidato.cidade || '';
+    document.getElementById('edit-cidade').value = local.cidade;
+    document.getElementById('edit-estado').value = local.estado;
+    atualizarContadorResumo(document.getElementById('edit-resumo'));
     
     // Seleciona o elemento modal de edição no DOM
     const modal = document.getElementById('modal-edicao');
@@ -181,18 +236,68 @@ if (formEditarPerfil) {
     formEditarPerfil.addEventListener('submit', async function(e) {
         e.preventDefault(); // Impede o recarregamento padrão da página
 
+        const telefone = document.getElementById('edit-telefone').value.trim();
+        const formacao = document.getElementById('edit-formacao').value.trim();
+        const cidade = document.getElementById('edit-cidade').value.trim();
+        const estado = document.getElementById('edit-estado').value.trim().toUpperCase();
+        const resumo = document.getElementById('edit-resumo').value.trim();
+
+        if (telefone && !/^\d+$/.test(telefone)) {
+            alert('O telefone deve conter apenas números.');
+            return;
+        }
+        if (telefone.length > 11) {
+            alert('O telefone deve ter no máximo 11 números.');
+            return;
+        }
+        if (formacao.length > 50) {
+            alert('A formação deve ter no máximo 50 caracteres.');
+            return;
+        }
+        if (cidade.length > 30) {
+            alert('A cidade deve ter no máximo 30 caracteres.');
+            return;
+        }
+        if (cidade || estado) {
+            if (!cidade) {
+                alert('Informe a cidade junto com a UF.');
+                return;
+            }
+            if (!/^[A-Za-z]{2}$/.test(estado)) {
+                alert('O estado deve ter exatamente 2 letras (UF).');
+                return;
+            }
+        }
+        if (resumo.length > 300) {
+            alert('O resumo deve ter no máximo 300 caracteres.');
+            return;
+        }
+
+        const fotoInput = document.getElementById('edit-foto');
+        const fotoArquivo = fotoInput && fotoInput.files[0] ? fotoInput.files[0] : null;
+        if (fotoArquivo) {
+            const extensao = (fotoArquivo.name.split('.').pop() || '').toLowerCase();
+            if (!['jpg', 'jpeg', 'png'].includes(extensao)) {
+                alert('A foto de perfil deve ser .jpg, .jpeg ou .png.');
+                return;
+            }
+            if (fotoArquivo.size > 2 * 1024 * 1024) {
+                alert('A foto de perfil deve ter no máximo 2MB.');
+                return;
+            }
+        }
+
         // Cria uma instância de FormData para suportar o envio de dados textuais e ficheiros binários (fotos/PDFs)
         const formData = new FormData();
-        formData.append('nome', document.getElementById('edit-nome').value);
-        formData.append('telefone', document.getElementById('edit-telefone').value);
-        formData.append('resumo', document.getElementById('edit-resumo').value);
-        formData.append('formacao', document.getElementById('edit-formacao').value);
-        formData.append('cidade', document.getElementById('edit-cidade').value);
+        formData.append('nome', document.getElementById('edit-nome').value.trim());
+        formData.append('telefone', telefone);
+        formData.append('resumo', resumo);
+        formData.append('formacao', formacao);
+        formData.append('cidade', cidade);
+        formData.append('estado', estado);
         
-        // Verifica se foi selecionado um ficheiro de nova foto de perfil
-        const fotoInput = document.getElementById('edit-foto');
-        if (fotoInput && fotoInput.files[0]) {
-            formData.append('foto', fotoInput.files[0]);
+        if (fotoArquivo) {
+            formData.append('foto', fotoArquivo);
         }
 
         // Verifica se foi selecionado um novo ficheiro de currículo em PDF
@@ -218,11 +323,13 @@ if (formEditarPerfil) {
                 alert(resultado.mensagem); // Exibe mensagem informativa de sucesso
                 
                 // Atualiza os dados localmente no objeto candidato com os novos valores inseridos nos inputs
-                candidato.nome = document.getElementById('edit-nome').value;
-                candidato.telefone = document.getElementById('edit-telefone').value;
-                candidato.resumo = document.getElementById('edit-resumo').value;
-                candidato.formacao = document.getElementById('edit-formacao').value;
-                candidato.cidade = document.getElementById('edit-cidade').value;
+                candidato.nome = document.getElementById('edit-nome').value.trim();
+                candidato.telefone = telefone;
+                candidato.resumo = resumo;
+                candidato.formacao = formacao;
+                candidato.cidade = resultado.cidade || (cidade ? `${cidade} - ${estado}` : '');
+                candidato.foto_perfil = resultado.foto_perfil || candidato.foto_perfil || null;
+                candidato.curriculo_pdf = resultado.curriculo_pdf || candidato.curriculo_pdf || null;
                 
                 // Atualiza o objeto serializado no localStorage com as novas informações
                 localStorage.setItem('candidatoLogado', JSON.stringify(candidato));

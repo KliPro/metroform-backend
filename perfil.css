@@ -25,6 +25,9 @@ body.pagina-perfil-corpo {
 .card-info-usuario,
 .card-curriculo,
 .card-candidaturas {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
     /* Define o fundo branco para os cartões informativos do perfil */
     background: white;
     /* Aplica espaçamento interno de 30px */
@@ -40,6 +43,8 @@ body.pagina-perfil-corpo {
 }
 
 .perfil-cabecalho {
+    min-width: 0;
+    max-width: 100%;
     /* Ativa o flexbox para alinhar a foto de avatar e os dados do usuário lado a lado */
     display: flex;
     /* Alinha verticalmente os itens ao centro */
@@ -98,6 +103,35 @@ body.pagina-perfil-corpo {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Corrigir o erro do vazamento das informações do editar perfil */
+.dados-usuario {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.dados-usuario h2,
+.dados-usuario p,
+#nome-exibir,
+#formacao-exibir,
+#email-exibir,
+#telefone-exibir,
+#cidade-exibir,
+.resumo-profissional,
+.resumo-profissional p,
+#resumo-exibir,
+.card-curriculo p,
+.card-curriculo small,
+.card-candidaturas h4,
+.card-candidaturas p,
+.item-candidatura,
+.item-candidatura h4,
+.item-candidatura p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .dados-usuario h2 {
@@ -433,6 +467,22 @@ body.pagina-perfil-corpo {
     font-size: 1.2rem;
     cursor: pointer;
     color: #666;
+}
+
+.grupo-localizacao {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.grupo-localizacao .campo-cidade {
+    flex: 1;
+    min-width: 0;
+}
+
+.grupo-localizacao .campo-estado {
+    width: 96px;
+    flex: 0 0 96px;
 }
 
 .grupo-input {
