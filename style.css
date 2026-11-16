@@ -786,3 +786,47 @@ html {
         justify-content: center;
     }
 }
+
+/* ========================================== */
+/* MELHORIAS VISUAIS PARA OS CARDS (CULTURA E DIFERENCIAIS) */
+/* ========================================== */
+
+.card-cultura, 
+.item-diferencial {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 35px 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eaeaea; /* Mantém apenas a bordinha cinza suave em toda a volta */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito de elevação ao passar o rato (Hover) */
+.card-cultura:hover, 
+.item-diferencial:hover {
+    transform: translateY(-6px); /* O card sobe levemente */
+    box-shadow: 0 10px 25px rgba(139, 0, 0, 0.1); /* Sombra ganha um brilho avermelhado subtil */
+}
+
+/* Estilização centralizada e destaque modernizado dos ícones */
+.card-cultura i, 
+.item-diferencial i {
+    font-size: 24px;
+    color: var(--metroform-red);
+    background-color: rgba(139, 0, 0, 0.08); /* Círculo de fundo suave ao redor do ícone */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Torna o fundo do ícone perfeitamente circular */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Inversão elegante de cores do ícone ao passar o rato no card */
+.card-cultura:hover i, 
+.item-diferencial:hover i {
+    background-color: var(--metroform-red);
+    color: #ffffff;
+}
